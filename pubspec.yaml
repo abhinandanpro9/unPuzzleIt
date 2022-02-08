@@ -1,0 +1,56 @@
+name: unpuzzle_it_abhi
+description: Unpuzzle the craziness and unleash the fun!.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.13.0 <3.0.0"
+  flutter: 2.8.0
+
+dependencies:
+  flame: ^1.0.0 # MIT Style License: https://pub.dev/packages/flame/license
+  confetti: ^0.6.0 # MIT Style License: https://pub.dev/packages/confetti/license
+  file_picker: ^4.3.3 # MIT Style License: https://pub.dev/packages/file_picker/license
+  bloc: ^8.0.2
+  equatable: ^2.0.3
+  fake_async: ^1.2.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.0.1
+  flutter_localizations:
+    sdk: flutter
+  gap: ^2.0.0
+  google_fonts: ^2.1.0
+  intl: ^0.17.0
+  just_audio: ^0.9.19
+  universal_platform: ^1.0.0+1 # MIT Style License: https://pub.dev/packages/universal_platform/license
+  url_launcher: ^6.0.17
+  image: ^3.1.1 # MIT Style License: https://pub.dev/packages/image/license
+  rainbow_color: ^2.0.1 # MIT Style License: https://pub.dev/packages/rainbow_color/license
+
+flutter:
+  generate: true
+  uses-material-design: true
+  assets:
+    - assets/audio/
+    - assets/images/
+    - assets/images/audio_control/
+    - assets/images/dashatar/gallery/
+    - assets/images/dashatar/success/
+    - assets/images/dashatar/custom/
+    - assets/images/dashatar/path/
+    - assets/images/dashatar/blue/
+    - assets/images/parallax/
+  fonts:
+    - family: GoogleSans
+      fonts:
+        - asset: assets/fonts/GoogleSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/GoogleSans-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/GoogleSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/GoogleSans-Italic.ttf
+          weight: 400
+          style: italic
