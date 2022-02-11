@@ -15,6 +15,7 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
     on<TileTapped>(_onTileTapped);
     on<PuzzleReset>(_onPuzzleReset);
     on<PuzzleReverse>(_onPuzzleReverse);
+    on<PuzzleTriggerCustom>(_onPuzzleTriggerCustom);
   }
 
   late int tileSize;
@@ -27,6 +28,17 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
 
   // List to store the swap process so that it can be reversed later
   List<int> tileProcessFlow = [];
+
+  void _onPuzzleTriggerCustom(
+    PuzzleTriggerCustom event,
+    Emitter<PuzzleState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        customPuzzleChange: !event.isImageChange,
+      ),
+    );
+  }
 
   // create:
   // reverse solves the puzzle

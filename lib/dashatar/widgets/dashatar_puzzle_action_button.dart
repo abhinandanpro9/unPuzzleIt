@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -97,6 +98,9 @@ class _DashatarPuzzleActionButtonState
             ? context.l10n.dashatarGetReady
             : context.l10n.dashatarStartGame);
     var tileSize = context.read<PuzzleBloc>().tileSize;
+    final puzzleChange =
+        context.select((PuzzleBloc bloc) => bloc.state.customPuzzleChange);
+    final puzzle = context.watch<PuzzleBloc>().state.puzzle;
 
     // Handle theme changes if size greater then 4
     if (!theme.isCustomTheme && tileSize != 4) {
@@ -179,6 +183,29 @@ class _DashatarPuzzleActionButtonState
       ),
     );
 
+    Widget _addNew = Tooltip(
+      key: const Key('btn3'),
+      message: isLoading ? '':context.l10n.puzzleAddNew,
+      verticalOffset: 40,
+      child: PuzzleButtonCustom(
+        onPressed: isLoading
+            ? null
+            : () async {
+                // create:
+                // Reset the timer and the countdown.
+                // context.read<TimerBloc>().add(const TimerReset());
+                // context.read<TimerBloc>().add(const TimerReset());
+                context
+                    .read<PuzzleBloc>()
+                    .add(PuzzleTriggerCustom(puzzleChange));
+
+                unawaited(_audioPlayer.replay());
+              },
+        textColor: isLoading ? theme.defaultColor : null,
+        child: Text('+'),
+      ),
+    );
+
     // final Widget _sliderWidget =
 
     return ResponsiveLayoutBuilder(
@@ -198,7 +225,11 @@ class _DashatarPuzzleActionButtonState
             if (theme.isCustomTheme)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[_sliderWidget(status,sliderMin,sliderMax,tileSize,isLoading)],
+                children: <Widget>[
+                  _sliderWidget(
+                      status, sliderMin, sliderMax, tileSize, isLoading),
+                  _addNew,
+                ],
               ),
           ],
         ),
@@ -220,7 +251,9 @@ class _DashatarPuzzleActionButtonState
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _sliderWidget(status,sliderMin,sliderMax,tileSize,isLoading),
+                  _sliderWidget(
+                      status, sliderMin, sliderMax, tileSize, isLoading),
+                  _addNew,
                 ],
               ),
           ],
@@ -242,7 +275,11 @@ class _DashatarPuzzleActionButtonState
             if (theme.isCustomTheme)
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[_sliderWidget(status,sliderMin,sliderMax,tileSize,isLoading)],
+                children: <Widget>[
+                  _sliderWidget(
+                      status, sliderMin, sliderMax, tileSize, isLoading),
+                  _addNew,
+                ],
               ),
           ],
         ),

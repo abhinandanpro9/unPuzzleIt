@@ -1,25 +1,67 @@
+
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/parallax.dart';
+import 'package:flame/input.dart';
+import 'package:flutter/material.dart';
 
-class FlameCustomBackground extends FlameGame {
+enum RobotState {
+  idle,
+  running,
+}
 
-  final _imageNames = [
-    ParallaxImageData('parallax/bg.png'),
-    ParallaxImageData('parallax/mountain-far.png'),
-    ParallaxImageData('parallax/mountains.png'),
-    ParallaxImageData('parallax/trees.png'),
-    ParallaxImageData('parallax/foreground-trees.png'),
-  ];
+class FlameCustomCharacter extends FlameGame with TapDetector {
+
+  late SpriteAnimationGroupComponent robot;
 
   @override
   Future<void> onLoad() async {
-    final parallax = await loadParallaxComponent(
-      _imageNames,
-      baseVelocity: Vector2(20, 0),
-      velocityMultiplierDelta: Vector2(1, 1.0),
+    // final running = await loadSpriteAnimation(
+    //   'parallax/ember.png',
+    //   SpriteAnimationData.sequenced(
+    //     amount: 8,
+    //     stepTime: 0.2,
+    //     textureSize: Vector2(16, 18),
+    //   ),
+    // );
+    final idle = await loadSpriteAnimation(
+      'parallax/ember.png',
+      SpriteAnimationData.sequenced(
+        amount: 4,
+        stepTime: 0.4,
+        textureSize: Vector2(16, 18),
+      ),
     );
-    add(parallax);
-    return super.onLoad();
+
+    final robotSize = Vector2(64, 72);
+    robot = SpriteAnimationGroupComponent<RobotState>(
+        animations: {
+          // RobotState.running: running,
+          RobotState.idle: idle,
+        },
+        current: RobotState.idle,
+        // position: size / 2 - robotSize / 2,
+        size: robotSize,
+        // paint: Paint()..color = Colors.transparent,
+        );
+
+    add(robot);
   }
+
+  @override
+  void onTapDown(_) {
+    robot.current = RobotState.running;
+  }
+
+  @override
+  void onTapCancel() {
+    robot.current = RobotState.idle;
+  }
+
+  @override
+  void onTapUp(_) {
+    robot.current = RobotState.idle;
+  }
+
+  @override
+  Color backgroundColor() => Colors.transparent;
 }

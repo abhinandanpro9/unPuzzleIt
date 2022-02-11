@@ -90,7 +90,14 @@ class PuzzlePage extends StatelessWidget {
         GameWidget(
           game: ParallaxBackground(),
         ),
-        PuzzleView()
+        PuzzleView(),
+        // Container(
+        //   width: 100,
+        //   height: 100,
+        //   child: GameWidget(
+        //     game: FlameCustomCharacter(),
+        //   ),
+        // )
       ]),
     );
   }
@@ -602,6 +609,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   FilePickerResult? filePath;
   bool _isLoading = true;
   bool _userAborted = false;
+  bool _customPuzzleChange = false;
   Image? _imageMain;
   late Uint8List tempBytes;
   late Widget _paintWidget = RepaintBoundary(
@@ -633,7 +641,6 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   );
   Image _tileDummy =
       Image(image: new AssetImage('assets/images/dashatar/custom/13.png'));
-  final _player = AudioPlayer();
 
   @override
   void initState() {
@@ -641,7 +648,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   }
 
   // Function to pick file
-  Future<void> _pickFiles(int size) async {
+  Future<void> _pickFiles(int size, bool customPuzzleChange) async {
     filePath = null;
 
     // File picker
@@ -660,7 +667,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
 
     if (filePath != null)
       // Parse file
-      _parseFile(size.toDouble());
+      _parseFile(size.toDouble(), customPuzzleChange);
 
     // Set state and return
     if (!mounted) return;
@@ -740,7 +747,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   }
 
   // Function to parse the file and paint on canvas
-  Future<void> _parseFile(double size) async {
+  Future<void> _parseFile(double size, bool customPuzzleChange) async {
     if (filePath == null) return;
 
     if (kIsWeb) {
@@ -811,7 +818,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
     );
 
     // Wait for some time and then post update
-    async.Timer(const Duration(seconds: 1), () async {
+    async.Timer(const Duration(seconds: 2), () async {
       setState(() {
         _isImageLoaded = true;
       });
@@ -819,6 +826,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
 
     setState(() {
       dev.log('image fetch success');
+      _customPuzzleChange = customPuzzleChange;
       // _isImageLoaded = true;
     });
 
@@ -830,6 +838,8 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   Widget build(BuildContext context) {
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
     final puzzle = context.select((PuzzleBloc bloc) => bloc.state.puzzle);
+    final customPuzzleChange =
+        context.select((PuzzleBloc bloc) => bloc.state.customPuzzleChange);
     var _checkForIndex = puzzle.tiles.length != _tileImageList.length;
     final size = puzzle.getDimension();
 
@@ -837,9 +847,13 @@ class _PuzzleBoard extends State<PuzzleBoard> {
 
     if (_isImageLoaded == true) {
       _parseWidget(size);
-    } else if (_checkForIndex && _isAllSuccess && theme.isCustomTheme) {
+    } else if ((_checkForIndex && _isAllSuccess && theme.isCustomTheme)) {
       _isAllSuccess = false;
-      _parseFile(size.toDouble());
+      _parseFile(size.toDouble(), customPuzzleChange);
+    } else if (theme.isCustomTheme &&
+        (_customPuzzleChange != customPuzzleChange)) {
+      _isAllSuccess = false;
+      _pickFiles(size, customPuzzleChange);
     }
 
     // if (false == theme.isCustomTheme) {
@@ -852,7 +866,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
         filePath == null &&
         _isImageLoaded == false &&
         _tileImageList.length == 0) {
-      _pickFiles(size);
+      // _pickFiles(size, customPuzzleChange);
     } else {
       // _imageMain = null;
       _isImageLoaded = false;
@@ -926,7 +940,13 @@ class _PuzzleTile extends StatelessWidget {
 
     // flow: TILE 2.
     return tile.isWhitespace
-        ? theme.layoutDelegate.whitespaceTileBuilder()
+        ? (theme.isPathTheme)
+            ? theme.layoutDelegate.tileBuilder(
+                tile,
+                state,
+                tileImage,
+              )
+            : theme.layoutDelegate.whitespaceTileBuilder()
         : theme.layoutDelegate.tileBuilder(
             tile,
             state,

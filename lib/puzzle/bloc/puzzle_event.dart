@@ -35,6 +35,12 @@ class PuzzleReset extends PuzzleEvent {
   const PuzzleReset();
 }
 
+class PuzzleTriggerCustom extends PuzzleEvent {
+  const PuzzleTriggerCustom(this.isImageChange);
+
+  final bool isImageChange;
+}
+
 // create:
 class PuzzleReverse extends PuzzleEvent {
   const PuzzleReverse(this.tilesList);

@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
+import 'package:unpuzzle_it_abhi/flames/flames.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
@@ -108,70 +110,104 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
 
     final canPress = hasStarted && puzzleIncomplete;
 
-    return AudioControlListener(
-      audioPlayer: _audioPlayer,
-      child: AnimatedAlign(
-        alignment: FractionalOffset(
-          (widget.tile.currentPosition.x - 1) / (size - 1),
-          (widget.tile.currentPosition.y - 1) / (size - 1),
-        ),
-        duration: movementDuration,
-        curve: Curves.easeInOut,
-        child: ResponsiveLayoutBuilder(
-          small: (_, child) => SizedBox.square(
-            key: Key('dashatar_puzzle_tile_small_${widget.tile.value}'),
-            dimension: _TileSize.small,
-            child: child,
-          ),
-          medium: (_, child) => SizedBox.square(
-            key: Key('dashatar_puzzle_tile_medium_${widget.tile.value}'),
-            dimension: _TileSize.medium,
-            child: child,
-          ),
-          large: (_, child) => SizedBox.square(
-            key: Key('dashatar_puzzle_tile_large_${widget.tile.value}'),
-            dimension: _TileSize.large,
-            child: child,
-          ),
-          child: (_) => MouseRegion(
-            onEnter: (_) {
-              if (canPress) {
-                _controller.forward();
-              }
-            },
-            onExit: (_) {
-              if (canPress) {
-                _controller.reverse();
-              }
-            },
-            //flow: TILE click handling
-            child: ScaleTransition(
-              key: Key('dashatar_puzzle_tile_scale_${widget.tile.value}'),
-              scale: _scale,
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                onPressed: canPress
-                    ? () {
-                        context.read<PuzzleBloc>().add(TileTapped(widget.tile));
-                        unawaited(_audioPlayer?.replay());
-                      }
-                    : null,
-                //flow: TILE 4. icon created here by loop
-                icon: (theme.isCustomTheme)
-                    ? widget.tileImage
-                    : Image.asset(
-                        theme.dashAssetForTile(widget.tile),
-                        semanticLabel: context.l10n.puzzleTileLabelText(
-                          widget.tile.value.toString(),
-                          widget.tile.currentPosition.x.toString(),
-                          widget.tile.currentPosition.y.toString(),
-                        ),
-                      ),
+    return Stack(
+      children: [
+        AudioControlListener(
+          audioPlayer: _audioPlayer,
+          child: AnimatedAlign(
+            alignment: FractionalOffset(
+              (widget.tile.currentPosition.x - 1) / (size - 1),
+              (widget.tile.currentPosition.y - 1) / (size - 1),
+            ),
+            duration: movementDuration,
+            curve: Curves.easeInOut,
+            child: ResponsiveLayoutBuilder(
+              small: (_, child) => SizedBox.square(
+                key: Key('dashatar_puzzle_tile_small_${widget.tile.value}'),
+                dimension: _TileSize.small,
+                child: child,
+              ),
+              medium: (_, child) => SizedBox.square(
+                key: Key('dashatar_puzzle_tile_medium_${widget.tile.value}'),
+                dimension: _TileSize.medium,
+                child: child,
+              ),
+              large: (_, child) => SizedBox.square(
+                key: Key('dashatar_puzzle_tile_large_${widget.tile.value}'),
+                dimension: _TileSize.large,
+                child: child,
+              ),
+              child: (_) => MouseRegion(
+                onEnter: (_) {
+                  if (canPress) {
+                    _controller.forward();
+                  }
+                },
+                onExit: (_) {
+                  if (canPress) {
+                    _controller.reverse();
+                  }
+                },
+                //flow: TILE click handling
+                child: ScaleTransition(
+                  key: Key('dashatar_puzzle_tile_scale_${widget.tile.value}'),
+                  scale: _scale,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    onPressed: canPress
+                        ? () {
+                            context
+                                .read<PuzzleBloc>()
+                                .add(TileTapped(widget.tile));
+                            unawaited(_audioPlayer?.replay());
+                          }
+                        : null,
+                    //flow: TILE 4. icon created here by loop
+                    icon: (theme.isCustomTheme)
+                        ? widget.tileImage
+                        : Image.asset(
+                            theme.dashAssetForTile(widget.tile),
+                            semanticLabel: context.l10n.puzzleTileLabelText(
+                              widget.tile.value.toString(),
+                              widget.tile.currentPosition.x.toString(),
+                              widget.tile.currentPosition.y.toString(),
+                            ),
+                          ),
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (!theme.isCustomTheme && widget.tile.value == 10)
+          Container(
+              alignment: FractionalOffset(
+                (widget.tile.currentPosition.x - 1) / (size - 1),
+                (widget.tile.currentPosition.y - 1) / (size - 1),
+              ),
+              child: ResponsiveLayoutBuilder(
+                  small: (_, child) => SizedBox.square(
+                        key: Key(
+                            'dashatar_puzzle_tile_small_${widget.tile.value}'),
+                        dimension: _TileSize.small,
+                        child: child,
+                      ),
+                  medium: (_, child) => SizedBox.square(
+                        key: Key(
+                            'dashatar_puzzle_tile_medium_${widget.tile.value}'),
+                        dimension: _TileSize.medium,
+                        child: child,
+                      ),
+                  large: (_, child) => SizedBox.square(
+                        key: Key(
+                            'dashatar_puzzle_tile_large_${widget.tile.value}'),
+                        dimension: _TileSize.large,
+                        child: child,
+                      ),
+                  child: (_) => GameWidget(
+                        game: FlameCustomCharacter(),
+                      ))),
+      ],
     );
   }
 }

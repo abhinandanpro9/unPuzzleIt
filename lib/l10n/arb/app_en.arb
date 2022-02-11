@@ -12,6 +12,10 @@
     "@puzzleSolveTooltip": {
         "description": "Shown as a tooltip for the puzzle Solve button"
     },
+    "puzzleAddNew": "Add New Custom Image",
+    "@puzzleAddNew": {
+        "description": "Shown as a tooltip for the puzzle new image add"
+    },
     "puzzleSliderTooltip": "Slide to choose the grid size! \n Things can get complicated!",
     "@puzzleSliderTooltip": {
         "description": "Shown as a tooltip for the puzzle Slider"

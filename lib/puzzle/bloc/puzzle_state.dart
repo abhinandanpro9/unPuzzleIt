@@ -15,7 +15,10 @@ class PuzzleState extends Equatable {
     this.numberOfCorrectTiles = 0,
     this.numberOfMoves = 0,
     this.lastTappedTile,
+    this.customPuzzleChange=false,
   });
+  /// [customPuzzleChange] State to trigger image change on custom page
+  final customPuzzleChange;
 
   /// [Puzzle] containing the current tile arrangement.
   final Puzzle puzzle;
@@ -55,6 +58,7 @@ class PuzzleState extends Equatable {
     int? numberOfCorrectTiles,
     int? numberOfMoves,
     Tile? lastTappedTile,
+    bool? customPuzzleChange,
   }) {
     return PuzzleState(
       puzzle: puzzle ?? this.puzzle,
@@ -63,6 +67,7 @@ class PuzzleState extends Equatable {
       numberOfCorrectTiles: numberOfCorrectTiles ?? this.numberOfCorrectTiles,
       numberOfMoves: numberOfMoves ?? this.numberOfMoves,
       lastTappedTile: lastTappedTile ?? this.lastTappedTile,
+      customPuzzleChange: customPuzzleChange ?? this.customPuzzleChange,
     );
   }
 
@@ -74,5 +79,6 @@ class PuzzleState extends Equatable {
         numberOfCorrectTiles,
         numberOfMoves,
         lastTappedTile,
+        customPuzzleChange,
       ];
 }

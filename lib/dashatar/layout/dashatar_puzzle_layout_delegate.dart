@@ -76,7 +76,10 @@ class DashatarPuzzleLayoutDelegate extends PuzzleLayoutDelegate {
   }
 
   @override
-  Widget boardBuilder(int size, List<Widget> tiles, ) {
+  Widget boardBuilder(
+    int size,
+    List<Widget> tiles,
+  ) {
     return Stack(
       children: [
         Positioned(
@@ -97,7 +100,9 @@ class DashatarPuzzleLayoutDelegate extends PuzzleLayoutDelegate {
               large: 96,
             ),
             // flow: TILE display Call
-            DashatarPuzzleBoard(tiles: tiles, ),
+            DashatarPuzzleBoard(
+              tiles: tiles,
+            ),
             const ResponsiveGap(
               large: 96,
             ),
