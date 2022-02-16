@@ -179,34 +179,73 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
             ),
           ),
         ),
-        if (!theme.isCustomTheme && widget.tile.value == 10)
-          Container(
+        if (!theme.isCustomTheme &&
+            theme.isPathTheme &&
+            widget.tile.value == 10)
+          AudioControlListener(
+            audioPlayer: _audioPlayer,
+            child: AnimatedAlign(
               alignment: FractionalOffset(
                 (widget.tile.currentPosition.x - 1) / (size - 1),
                 (widget.tile.currentPosition.y - 1) / (size - 1),
               ),
+              duration: movementDuration,
+              curve: Curves.easeInOut,
               child: ResponsiveLayoutBuilder(
-                  small: (_, child) => SizedBox.square(
-                        key: Key(
-                            'dashatar_puzzle_tile_small_${widget.tile.value}'),
-                        dimension: _TileSize.small,
-                        child: child,
+                small: (_, child) => SizedBox.square(
+                  key: Key('dashatar_puzzle_tile_small_${widget.tile.value}'),
+                  dimension: _TileSize.small / 2,
+                  child: MouseRegion(
+                    //flow: TILE click handling
+                    child: ScaleTransition(
+                      key: Key(
+                          'dashatar_puzzle_tile_scale_${widget.tile.value}'),
+                      scale: _scale,
+                      child: GameWidget(
+                        game: FlameCustomCharacter(
+                            width: _TileSize.small / 2,
+                            height: _TileSize.small / 2),
                       ),
-                  medium: (_, child) => SizedBox.square(
-                        key: Key(
-                            'dashatar_puzzle_tile_medium_${widget.tile.value}'),
-                        dimension: _TileSize.medium,
-                        child: child,
+                    ),
+                  ),
+                ),
+                medium: (_, child) => SizedBox.square(
+                  key: Key('dashatar_puzzle_tile_medium_${widget.tile.value}'),
+                  dimension: _TileSize.medium / 2,
+                  child: MouseRegion(
+                    //flow: TILE click handling
+                    child: ScaleTransition(
+                      key: Key(
+                          'dashatar_puzzle_tile_scale_${widget.tile.value}'),
+                      scale: _scale,
+                      child: GameWidget(
+                        game: FlameCustomCharacter(
+                            width: _TileSize.medium / 2,
+                            height: _TileSize.medium / 2),
                       ),
-                  large: (_, child) => SizedBox.square(
-                        key: Key(
-                            'dashatar_puzzle_tile_large_${widget.tile.value}'),
-                        dimension: _TileSize.large,
-                        child: child,
+                    ),
+                  ),
+                ),
+                large: (_, child) => SizedBox.square(
+                  key: Key('dashatar_puzzle_tile_large_${widget.tile.value}'),
+                  dimension: _TileSize.large / 2,
+                  child: MouseRegion(
+                    //flow: TILE click handling
+                    child: ScaleTransition(
+                      key: Key(
+                          'dashatar_puzzle_tile_scale_${widget.tile.value}'),
+                      scale: _scale,
+                      child: GameWidget(
+                        game: FlameCustomCharacter(
+                            width: _TileSize.large / 2,
+                            height: _TileSize.large / 2),
                       ),
-                  child: (_) => GameWidget(
-                        game: FlameCustomCharacter(),
-                      ))),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
       ],
     );
   }

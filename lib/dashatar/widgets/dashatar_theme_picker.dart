@@ -7,6 +7,8 @@ import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
+import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
+import 'package:unpuzzle_it_abhi/timer/timer.dart';
 
 /// {@template dashatar_theme_picker}
 /// Displays the Dashatar theme picker to choose between
@@ -37,7 +39,7 @@ class DashatarThemePicker extends StatefulWidget {
 class _DashatarThemePickerState extends State<DashatarThemePicker> {
   late final AudioPlayer _audioPlayer;
 
-    @override
+  @override
   void initState() {
     super.initState();
     _audioPlayer = widget._audioPlayerFactory();
@@ -47,6 +49,7 @@ class _DashatarThemePickerState extends State<DashatarThemePicker> {
   Widget build(BuildContext context) {
     final themeState = context.watch<DashatarThemeBloc>().state;
     final activeTheme = themeState.theme;
+    final puzzle = context.select((PuzzleBloc bloc) => bloc.state.puzzle);
 
     return AudioControlListener(
       audioPlayer: _audioPlayer,
@@ -86,6 +89,12 @@ class _DashatarThemePickerState extends State<DashatarThemePicker> {
                           // flow: 11111
                           if (isActiveTheme) {
                             return;
+                          }
+
+                          if (activeTheme.isCustomTheme &&
+                              puzzle.tiles.length > 16) {
+                            // fix: For Timer reset after switch from custom theme
+                            context.read<TimerBloc>().add(const TimerReset());
                           }
 
                           // Update the current Dashatar theme.

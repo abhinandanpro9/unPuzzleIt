@@ -22,8 +22,10 @@ import 'package:just_audio/just_audio.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
 import 'package:unpuzzle_it_abhi/colors/colors.dart';
+import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/flames/flames.dart';
+import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/models/models.dart';
@@ -129,12 +131,34 @@ class _PuzzleView extends State<PuzzleView>
     with SingleTickerProviderStateMixin {
   late AnimationController _blueController;
   late Animation<double> _blueAnim;
+  async.Timer? _startPuzzleTimer;
+  bool isStartCalled = false;
 
   // animate a double from 0 to 10
   Animatable<double> blueBgValue = Tween<double>(begin: 0.0, end: 10.0);
 
   @override
   void initState() {
+    // create:
+    if (!isStartCalled) {
+      _startPuzzleTimer =
+          async.Timer(const Duration(milliseconds: 100), () async {
+        await showAppDialogCustom<void>(
+          context: context,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: context.read<DashatarThemeBloc>(),
+              ),
+            ],
+            child: const SplashScreen(),
+          ),
+        );
+      });
+
+      isStartCalled = true;
+    }
+
     super.initState();
     _blueController = AnimationController(
       duration: const Duration(seconds: 15),
@@ -150,6 +174,7 @@ class _PuzzleView extends State<PuzzleView>
   @override
   void dispose() {
     _blueController.dispose();
+    _startPuzzleTimer!.cancel();
     super.dispose();
   }
 
@@ -202,6 +227,8 @@ class _PuzzleView extends State<PuzzleView>
   @override
   Widget build(BuildContext context) {
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
+    // context.read<DashatarThemeBloc>().add(DashatarThemeChanged(themeIndex: 0));
     // final themeState = context.watch<DashatarThemeBloc>().state;
     // final activeTheme = themeState.theme;
 
@@ -301,7 +328,7 @@ class _PuzzleCreate extends State<_Puzzle> {
     super.initState();
     _player = AudioPlayer();
 
-    // create: audio
+    // create: audio AudioControlListener can be used
     _init();
   }
 
@@ -554,17 +581,21 @@ class _PuzzleSections extends State<PuzzleSections> {
     return ResponsiveLayoutBuilder(
       small: (context, child) => Column(
         children: [
+          _starBlast,
           theme.layoutDelegate.startSectionBuilder(state),
           const PuzzleMenu(),
           const PuzzleBoard(),
           theme.layoutDelegate.endSectionBuilder(state),
+          _starBlast,
         ],
       ),
       medium: (context, child) => Column(
         children: [
+          _starBlast,
           theme.layoutDelegate.startSectionBuilder(state),
           const PuzzleBoard(),
           theme.layoutDelegate.endSectionBuilder(state),
+          _starBlast,
         ],
       ),
       large: (context, child) => Row(
@@ -605,6 +636,7 @@ class PuzzleBoard extends StatefulWidget {
 }
 
 class _PuzzleBoard extends State<PuzzleBoard> {
+  final double _offset = 20; // Controls the tile offset
   final GlobalKey _globalKey = GlobalKey();
   FilePickerResult? filePath;
   bool _isLoading = true;
@@ -704,6 +736,20 @@ class _PuzzleBoard extends State<PuzzleBoard> {
       sizeTile = _TileSize.small;
     }
 
+    // fix: For size exceeding max display width
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // fix: For size exceeding max display width
+    if (screenWidth <= PuzzleBreakpoints.small) {
+      sizeTile = min(_TileSize.small, (screenWidth - _offset)/size);
+    } else if (screenWidth <= PuzzleBreakpoints.medium) {
+      sizeTile = min(_TileSize.medium, (screenWidth - _offset)/size);
+    } else if (screenWidth <= PuzzleBreakpoints.large) {
+      sizeTile = min(_TileSize.large, (screenWidth - _offset)/size);
+    } else {
+      sizeTile = min(_TileSize.large, (screenWidth - _offset)/size);
+    }
+
     var index = 0;
 
     // Crop image to cube and store as widget
@@ -768,6 +814,10 @@ class _PuzzleBoard extends State<PuzzleBoard> {
 
     if (_imageMain == null) return;
 
+    // Make sure width is not greater than screen width
+    // fix: For size exceeding max display width
+    final screenWidth = MediaQuery.of(context).size.width - _offset;
+
     // First show the image in order to get get the image and crop
     const textStyle = TextStyle(
       color: Color(0xFFFFFFFF),
@@ -778,6 +828,8 @@ class _PuzzleBoard extends State<PuzzleBoard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: const [
             CircularProgressIndicator(),
             Padding(padding: EdgeInsets.all(10)),
@@ -794,22 +846,22 @@ class _PuzzleBoard extends State<PuzzleBoard> {
             large: (_, child) => Container(
               // color: Colors.red,
               padding: const EdgeInsets.all(10),
-              height: _TileSize.large * size,
-              width: _TileSize.large * size,
+              height: min(_TileSize.large * size, screenWidth),
+              width: min(_TileSize.large * size, screenWidth),
               child: _imageMain as Widget,
             ),
             medium: (_, child) => Container(
               // color: Colors.red,
               padding: const EdgeInsets.all(10),
-              height: _TileSize.medium * size,
-              width: _TileSize.medium * size,
+              height: min(_TileSize.medium * size, screenWidth),
+              width: min(_TileSize.medium * size, screenWidth),
               child: _imageMain as Widget,
             ),
             small: (_, child) => Container(
               // color: Colors.red,
               padding: const EdgeInsets.all(10),
-              height: _TileSize.small * size,
-              width: _TileSize.small * size,
+              height: min(_TileSize.small * size, screenWidth),
+              width: min(_TileSize.small * size, screenWidth),
               child: _imageMain as Widget,
             ),
           ),

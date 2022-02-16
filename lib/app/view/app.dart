@@ -65,6 +65,22 @@ class _AppState extends State<App> {
     _timer = Timer(const Duration(milliseconds: 20), () {
       for (var i = 1; i <= 15; i++) {
         precacheImage(
+          Image.asset('assets/images/hello.gif').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/happy.gif').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/angry.gif').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/bored.gif').image,
+          context,
+        );
+        precacheImage(
           Image.asset('assets/images/dashatar/custom/$i.png').image,
           context,
         );
@@ -115,18 +131,6 @@ class _AppState extends State<App> {
       );
       precacheImage(
         Image.asset('assets/images/timer_icon.png').image,
-        context,
-      );
-      precacheImage(
-        Image.asset('assets/images/simple_dash_large.png').image,
-        context,
-      );
-      precacheImage(
-        Image.asset('assets/images/simple_dash_medium.png').image,
-        context,
-      );
-      precacheImage(
-        Image.asset('assets/images/simple_dash_small.png').image,
         context,
       );
       precacheImage(
@@ -185,7 +189,11 @@ class _AppState extends State<App> {
         GlobalMaterialLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const PuzzlePage(),
+      home: Stack(
+        children: [
+          const PuzzlePage(),
+        ],
+      ),
     );
   }
 }

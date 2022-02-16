@@ -1,5 +1,29 @@
 {
     "@@locale": "en",
+    "mainTitle": "How are you?",
+    "@mainTitle": {
+        "description": "Shown as a Title during start"
+    },
+    "mainTitleHelp": "Select a mood!\nOR\nSpin the Wheel!",
+    "@mainTitleHelp": {
+        "description": "Shown as a Help during start"
+    },
+    "mainWheelHelp": "Spin the Wheel!",
+    "@mainWheelHelp": {
+        "description": "Shown as a Help during start"
+    },
+    "mainSmiley1": "Great!!",
+    "@mainSmiley1": {
+        "description": "Shown as a tooltip for smiley"
+    },
+    "mainSmiley2": "Meh! Bored!",
+    "@mainSmiley2": {
+        "description": "Shown as a tooltip for smiley"
+    },
+    "mainSmiley3": "Angry!!",
+    "@mainSmiley3": {
+        "description": "Shown as a tooltip for smiley"
+    },
     "puzzleChangeTooltip": "Changing the theme will reset your score",
     "@puzzleChangeTooltip": {
         "description": "Shown as a tooltip for puzzle menu buttons"

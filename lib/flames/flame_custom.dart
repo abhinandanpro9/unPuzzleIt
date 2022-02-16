@@ -10,8 +10,14 @@ enum RobotState {
 }
 
 class FlameCustomCharacter extends FlameGame with TapDetector {
+  var height;
+
+  var width;
 
   late SpriteAnimationGroupComponent robot;
+
+  FlameCustomCharacter({ Key? key, required this.width, required this.height});
+
 
   @override
   Future<void> onLoad() async {
@@ -32,7 +38,7 @@ class FlameCustomCharacter extends FlameGame with TapDetector {
       ),
     );
 
-    final robotSize = Vector2(64, 72);
+    final robotSize = Vector2(width, height);
     robot = SpriteAnimationGroupComponent<RobotState>(
         animations: {
           // RobotState.running: running,
