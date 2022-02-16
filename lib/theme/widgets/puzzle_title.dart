@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
@@ -29,7 +31,7 @@ class PuzzleTitle extends StatelessWidget {
     return ResponsiveLayoutBuilder(
       small: (context, child) => Center(
         child: SizedBox(
-          width: 300,
+          width: min(500,MediaQuery.of(context).size.width-50),
           child: Center(
             child: child,
           ),
