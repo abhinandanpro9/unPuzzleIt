@@ -57,7 +57,7 @@ class _SplashScreenInfo extends State<HelpInfo> with TickerProviderStateMixin {
           final textStyle = (currentSize == ResponsiveLayoutSize.large
                   ? PuzzleTextStyle.headline2
                   : PuzzleTextStyle.headline3)
-              .copyWith(color: Colors.white);
+              .copyWith(color: Colors.white, fontFamily: '');
 
           final textAlign = TextAlign.center;
 

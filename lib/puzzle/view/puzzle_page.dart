@@ -143,7 +143,7 @@ class _PuzzleView extends State<PuzzleView>
     if (!isStartCalled) {
       _startPuzzleTimer =
           async.Timer(const Duration(milliseconds: 100), () async {
-        await showAppDialogCustom<void>(
+        await showAppDialogCustomSplash<void>(
           context: context,
           child: MultiBlocProvider(
             providers: [
