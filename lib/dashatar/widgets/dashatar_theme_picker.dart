@@ -46,6 +46,11 @@ class _DashatarThemePickerState extends State<DashatarThemePicker> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeState = context.watch<DashatarThemeBloc>().state;
     final activeTheme = themeState.theme;

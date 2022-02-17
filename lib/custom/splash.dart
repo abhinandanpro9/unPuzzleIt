@@ -12,12 +12,11 @@ import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
 import 'package:unpuzzle_it_abhi/typography/typography.dart';
 
-/// {@template dashatar_share_dialog}
-/// Displays a Dashatar share dialog with a score of the completed puzzle
-/// and an option to share the score using Twitter or Facebook.
+/// {@template splash}
+/// Displays a splash screen as a menu
 /// {@endtemplate}
 class SplashScreen extends StatefulWidget {
-  /// {@macro dashatar_share_dialog}
+  /// {@macro splash}
   const SplashScreen({
     Key? key,
     AudioPlayerFactory? audioPlayer,
@@ -40,11 +39,11 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   Future<void> help() async {
     // Obtain shared preferences.
     prefs = await SharedPreferences.getInstance();
-    final bool? helpSplash = prefs.getBool('helpSplash');
+    // final bool? helpSplash = prefs.getBool('helpSplash');
 
-    if (helpSplash != true) {
+    if (true) {
       // Call help ssection
-      _startTutorialTimer = Timer(const Duration(milliseconds: 100), () async {
+      _startTutorialTimer = Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(
           barrierDismissible: true,
           context: context,
@@ -54,7 +53,10 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                 value: context.read<DashatarThemeBloc>(),
               ),
             ],
-            child: const SplashScreenInfo(),
+            child: HelpInfo(
+              text: context.l10n.mainTitleHelp,
+              duration: 2000,
+            ),
           ),
         );
       });
@@ -93,7 +95,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void Exit(BuildContext context) {
+  void splashExit(BuildContext context) {
     Timer(const Duration(milliseconds: 500), () async {
       Navigator.of(context).pop();
     });
@@ -161,7 +163,9 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                             (currentSize == ResponsiveLayoutSize.large
                                     ? PuzzleTextStyle.headline2
                                     : PuzzleTextStyle.headline3)
-                                .copyWith(color: Colors.white);
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontFamily: 'Courgette');
 
                         final textAlign =
                             currentSize == ResponsiveLayoutSize.small
@@ -210,7 +214,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                         context.read<DashatarThemeBloc>().add(
                                             DashatarThemeChanged(
                                                 themeIndex: 1));
-                                        Exit(context);
+                                        splashExit(context);
                                       },
                                       iconSize: widthImage,
                                       icon: Image(
@@ -226,7 +230,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                         context.read<DashatarThemeBloc>().add(
                                             DashatarThemeChanged(
                                                 themeIndex: 2));
-                                        Exit(context);
+                                        splashExit(context);
                                       },
                                       iconSize: widthImage,
                                       icon: Image(
@@ -242,7 +246,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                         context.read<DashatarThemeBloc>().add(
                                             DashatarThemeChanged(
                                                 themeIndex: 0));
-                                        Exit(context);
+                                        splashExit(context);
                                       },
                                       iconSize: widthImage,
                                       icon: Image(
@@ -268,16 +272,16 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                         child: child,
                       ),
                       child: (currentSize) {
-                        final textStyle =
-                            (currentSize == ResponsiveLayoutSize.large
-                                    ? PuzzleTextStyle.headline2
-                                    : PuzzleTextStyle.headline3)
-                                .copyWith(color: Colors.white);
+                        // final textStyle =
+                        //     (currentSize == ResponsiveLayoutSize.large
+                        //             ? PuzzleTextStyle.headline2
+                        //             : PuzzleTextStyle.headline3)
+                        //         .copyWith(color: Colors.white);
 
-                        final textAlign =
-                            currentSize == ResponsiveLayoutSize.small
-                                ? TextAlign.center
-                                : TextAlign.left;
+                        // final textAlign =
+                        //     currentSize == ResponsiveLayoutSize.small
+                        //         ? TextAlign.center
+                        //         : TextAlign.left;
 
                         final widthImage =
                             (currentSize == ResponsiveLayoutSize.large
@@ -293,19 +297,19 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                               context
                                   .read<DashatarThemeBloc>()
                                   .add(DashatarThemeChanged(themeIndex: 0));
-                              Exit(context);
+                              splashExit(context);
                             } else if (selected.contains('Custom')) {
                               // Custom Theme
                               context
                                   .read<DashatarThemeBloc>()
                                   .add(DashatarThemeChanged(themeIndex: 2));
-                              Exit(context);
+                              splashExit(context);
                             } else if (selected.contains('Path')) {
                               // Path Theme
                               context
                                   .read<DashatarThemeBloc>()
                                   .add(DashatarThemeChanged(themeIndex: 1));
-                              Exit(context);
+                              splashExit(context);
                             }
                           },
                         );
@@ -330,17 +334,19 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                             (currentSize == ResponsiveLayoutSize.large
                                     ? PuzzleTextStyle.headline2
                                     : PuzzleTextStyle.headline3)
-                                .copyWith(color: Colors.white);
+                                .copyWith(
+                                    color: Colors.white,
+                                    fontFamily: 'Courgette');
 
                         final textAlign =
                             currentSize == ResponsiveLayoutSize.small
                                 ? TextAlign.center
                                 : TextAlign.left;
 
-                        final widthImage =
-                            (currentSize == ResponsiveLayoutSize.large
-                                ? 300.0
-                                : 200.0);
+                        // final widthImage =
+                        //     (currentSize == ResponsiveLayoutSize.large
+                        //         ? 300.0
+                        //         : 200.0);
 
                         return AnimatedDefaultTextStyle(
                           style: textStyle,
@@ -358,77 +364,6 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                 ));
           }),
         ),
-      ),
-    );
-  }
-}
-
-class SplashScreenInfo extends StatefulWidget {
-  /// {@macro dashatar_share_dialog}
-  const SplashScreenInfo({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  State<SplashScreenInfo> createState() => _SplashScreenInfo();
-}
-
-class _SplashScreenInfo extends State<SplashScreenInfo>
-    with TickerProviderStateMixin {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void Exit(BuildContext context) {
-    Timer(const Duration(milliseconds: 3000), () async {
-      Navigator.of(context).pop();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final geog = context.read<DashatarThemeBloc>();
-
-    Exit(context);
-
-    return Center(
-      child: Wrap(
-        children: [
-          ResponsiveLayoutBuilder(
-              small: (_, child) => child!,
-              medium: (_, child) => child!,
-              large: (_, child) => child!,
-              child: (currentSize) {
-                final textStyle = (currentSize == ResponsiveLayoutSize.large
-                        ? PuzzleTextStyle.headline2
-                        : PuzzleTextStyle.headline3)
-                    .copyWith(
-                        color: (currentSize == ResponsiveLayoutSize.small)
-                            ? Colors.black
-                            : Colors.white);
-
-                final textAlign = currentSize == ResponsiveLayoutSize.small
-                    ? TextAlign.center
-                    : TextAlign.left;
-
-                return AnimatedDefaultTextStyle(
-                  style: textStyle,
-                  duration: PuzzleThemeAnimationDuration.textStyle,
-                  child: Center(
-                    child: Text(
-                      context.l10n.mainTitleHelp,
-                      textAlign: textAlign,
-                    ),
-                  ),
-                );
-              })
-        ],
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -100,7 +99,7 @@ class _DashatarPuzzleActionButtonState
     var tileSize = context.read<PuzzleBloc>().tileSize;
     final puzzleChange =
         context.select((PuzzleBloc bloc) => bloc.state.customPuzzleChange);
-    final puzzle = context.watch<PuzzleBloc>().state.puzzle;
+    // final puzzle = context.watch<PuzzleBloc>().state.puzzle;
 
     // Handle theme changes if size greater then 4
     if (!theme.isCustomTheme && tileSize != 4) {

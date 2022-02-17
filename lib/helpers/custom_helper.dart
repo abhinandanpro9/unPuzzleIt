@@ -49,13 +49,14 @@ class AppDialogCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayoutBuilder(
-      small: (_, __) => Material(
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
-          child: child,
-        ),
-      ),
+      small: (_, child) => child!,
+      // Material(
+      //   child: SizedBox(
+      //     width: double.infinity,
+      //     height: double.infinity,
+      //     child: child,
+      //   ),
+      // ),
       medium: (_, child) => child!,
       large: (_, child) => child!,
       child: (currentSize) {
@@ -71,7 +72,7 @@ class AppDialogCustom extends StatelessWidget {
             ),
           ),
           child: SizedBox(
-            width: double.infinity,
+            width: dialogWidth,
             child: child,
           ),
         );

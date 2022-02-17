@@ -51,6 +51,7 @@ class FlameCustomCharacter extends FlameGame with TapDetector {
         );
 
     add(robot);
+    super.onLoad();
   }
 
   @override

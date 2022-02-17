@@ -161,7 +161,7 @@ class _PuzzleView extends State<PuzzleView>
 
     super.initState();
     _blueController = AnimationController(
-      duration: const Duration(seconds: 15),
+      duration: const Duration(seconds: 10),
       vsync: this,
     )
       ..forward()
@@ -469,13 +469,49 @@ class PuzzleHeader extends StatelessWidget {
 /// Displays the logo of the puzzle.
 /// {@endtemplate}
 @visibleForTesting
-class PuzzleLogo extends StatelessWidget {
+class PuzzleLogo extends StatefulWidget {
   /// {@macro puzzle_logo}
   const PuzzleLogo({Key? key}) : super(key: key);
+  @override
+  _PuzzleLogo createState() => _PuzzleLogo();
+}
+
+class _PuzzleLogo extends State<PuzzleLogo> {
+  late final async.Timer _startTutorialTimer;
+
+  Future<void> callHelp(String textHelp) async {
+    _startTutorialTimer =
+        async.Timer(const Duration(milliseconds: 500), () async {
+      await showAppDialogCustom<void>(
+        barrierDismissible: true,
+        context: context,
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: context.read<DashatarThemeBloc>(),
+            ),
+          ],
+          child: HelpInfo(
+            text: textHelp,
+            duration: 3000,
+          ),
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final themeState = context.watch<DashatarThemeBloc>().state;
+    final activeTheme = themeState.theme;
+
+    // Call help
+    if (activeTheme.isCustomTheme) {
+      callHelp(context.l10n.customHelp);
+    } else if (activeTheme.isPathTheme) {
+      callHelp(context.l10n.pathHelp);
+    }
 
     return AppFlutterLogo(
       key: puzzleLogoKey,
@@ -741,13 +777,13 @@ class _PuzzleBoard extends State<PuzzleBoard> {
 
     // fix: For size exceeding max display width
     if (screenWidth <= PuzzleBreakpoints.small) {
-      sizeTile = min(_TileSize.small, (screenWidth - _offset)/size);
+      sizeTile = min(_TileSize.small, (screenWidth - _offset) / size);
     } else if (screenWidth <= PuzzleBreakpoints.medium) {
-      sizeTile = min(_TileSize.medium, (screenWidth - _offset)/size);
+      sizeTile = min(_TileSize.medium, (screenWidth - _offset) / size);
     } else if (screenWidth <= PuzzleBreakpoints.large) {
-      sizeTile = min(_TileSize.large, (screenWidth - _offset)/size);
+      sizeTile = min(_TileSize.large, (screenWidth - _offset) / size);
     } else {
-      sizeTile = min(_TileSize.large, (screenWidth - _offset)/size);
+      sizeTile = min(_TileSize.large, (screenWidth - _offset) / size);
     }
 
     var index = 0;

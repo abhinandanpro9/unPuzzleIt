@@ -55,3 +55,13 @@ flutter:
         - asset: assets/fonts/GoogleSans-Italic.ttf
           weight: 400
           style: italic
+
+    - family: Courgette
+      fonts:
+        - asset: assets/fonts/Courgette-Regular.ttf
+          weight: 200
+
+    - family: Satisfy
+      fonts:
+        - asset: assets/fonts/Satisfy-Regular.ttf
+          weight: 200

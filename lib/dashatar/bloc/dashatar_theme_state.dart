@@ -7,7 +7,7 @@ class DashatarThemeState extends Equatable {
     required this.themes,
     // this.theme = const GreenDashatarTheme(), // todo: modified
     // flow: THEME Controls the asset theme colors
-    this.theme = const PathDashatarTheme(),
+    this.theme = const BlueDashatarTheme(),
   });
 
   /// The list of all available [DashatarTheme]s.
