@@ -341,7 +341,7 @@ class _PuzzleCreate extends State<_Puzzle> {
     async.unawaited(_player.setVolume(1));
     async.unawaited(_player.setLoopMode(LoopMode.one));
     try {
-      // async.unawaited(_player.play());
+      async.unawaited(_player.play());
     } on Exception catch (_) {
       // log('Waiting for chrome permission');
     }

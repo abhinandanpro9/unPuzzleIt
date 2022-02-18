@@ -27,7 +27,7 @@ class PathDashatarTheme extends DashatarTheme {
   Color get backgroundColor => PuzzleColors.pathPrimary;
 
   @override
-  Color get defaultColor => PuzzleColors.path50;
+  Color get defaultColor => PuzzleColors.pathPrimary;
 
   @override
   Color get buttonColor => PuzzleColors.path50;

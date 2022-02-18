@@ -5,7 +5,7 @@ publish_to: none
 
 environment:
   sdk: ">=2.13.0 <3.0.0"
-  flutter: 2.8.0
+  flutter: 2.10.1
 
 dependencies:
   flame: ^1.0.0 # MIT Style License: https://pub.dev/packages/flame/license
@@ -23,7 +23,8 @@ dependencies:
   gap: ^2.0.0
   google_fonts: ^2.1.0
   intl: ^0.17.0
-  just_audio: ^0.9.19
+  just_audio: ^0.9.20
+  just_audio_libwinmedia : ^0.0.4 # MIT Style License: https://pub.dev/packages/just_audio_libwinmedia/license
   universal_platform: ^1.0.0+1 # MIT Style License: https://pub.dev/packages/universal_platform/license
   url_launcher: ^6.0.17
   image: ^3.1.1 # MIT Style License: https://pub.dev/packages/image/license
@@ -35,6 +36,7 @@ flutter:
   assets:
     - assets/audio/
     - assets/images/
+    - assets/images/splash/
     - assets/images/audio_control/
     - assets/images/dashatar/gallery/
     - assets/images/dashatar/success/

@@ -25,7 +25,7 @@ class CustomRoulette extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SpinningWheel(
-          Image.asset('assets/images/roulette.png'),
+          Image.asset('assets/images/splash/roulette.png'),
           width: width,
           height: height,
           initialSpinAngle: _generateRandomAngle(),
@@ -34,7 +34,7 @@ class CustomRoulette extends StatelessWidget {
           dividers: 8,
           onUpdate: _dividerController.add,
           onEnd: _dividerControllerEnd.add,
-          secondaryImage: Image.asset('assets/images/roulette-center.png'),
+          secondaryImage: Image.asset('assets/images/splash/roulette-center.png'),
           secondaryImageHeight: 110,
           secondaryImageWidth: 110,
         ),

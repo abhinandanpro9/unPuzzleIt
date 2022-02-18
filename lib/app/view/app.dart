@@ -69,27 +69,35 @@ class _AppState extends State<App> {
           context,
         );
         precacheImage(
-          Image.asset('assets/images/parallax/bg.png').image,
+          Image.asset('assets/images/parallax/mountain-far.png').image,
           context,
         );
         precacheImage(
-          Image.asset('assets/images/parallax/bg.png').image,
+          Image.asset('assets/images/parallax/foreground-trees.png').image,
           context,
         );
         precacheImage(
-          Image.asset('assets/images/hello.gif').image,
+          Image.asset('assets/images/splash/roulette.png').image,
           context,
         );
         precacheImage(
-          Image.asset('assets/images/happy.gif').image,
+          Image.asset('assets/images/splash/roulette-center.png').image,
           context,
         );
         precacheImage(
-          Image.asset('assets/images/angry.gif').image,
+          Image.asset('assets/images/splash/hello.gif').image,
           context,
         );
         precacheImage(
-          Image.asset('assets/images/bored.gif').image,
+          Image.asset('assets/images/splash/happy.gif').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/splash/angry.gif').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/splash/bored.gif').image,
           context,
         );
         precacheImage(

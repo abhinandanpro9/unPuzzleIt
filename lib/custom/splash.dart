@@ -140,7 +140,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
                         return Image(
                             height: widthImage,
-                            image: new AssetImage("assets/images/hello.gif"));
+                            image: new AssetImage("assets/images/splash/hello.gif"));
                       },
                     ),
 
@@ -219,7 +219,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                       iconSize: widthImage,
                                       icon: Image(
                                           image: new AssetImage(
-                                              "assets/images/happy.gif")))),
+                                              "assets/images/splash/happy.gif")))),
                               Tooltip(
                                   key: const Key('smileyBored'),
                                   message: context.l10n.mainSmiley2,
@@ -235,7 +235,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                       iconSize: widthImage,
                                       icon: Image(
                                           image: new AssetImage(
-                                              "assets/images/bored.gif")))),
+                                              "assets/images/splash/bored.gif")))),
                               Tooltip(
                                   key: const Key('smileyAngry'),
                                   message: context.l10n.mainSmiley3,
@@ -251,7 +251,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                       iconSize: widthImage,
                                       icon: Image(
                                           image: new AssetImage(
-                                              "assets/images/angry.gif"))))
+                                              "assets/images/splash/angry.gif"))))
                             ],
                           );
                         }),

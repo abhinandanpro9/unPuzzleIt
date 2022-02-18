@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:unpuzzle_it_abhi/colors/colors.dart';
+import 'package:unpuzzle_it_abhi/dashatar/bloc/bloc.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
@@ -38,6 +39,7 @@ class DashatarTimer extends StatelessWidget {
   Widget build(BuildContext context) {
     final secondsElapsed =
         context.select((TimerBloc bloc) => bloc.state.secondsElapsed);
+    final theme = context.select((DashatarThemeBloc bloc) => bloc.state.theme);
 
     return ResponsiveLayoutBuilder(
       small: (_, child) => child!,
@@ -62,7 +64,9 @@ class DashatarTimer extends StatelessWidget {
           children: [
             AnimatedDefaultTextStyle(
               style: currentTextStyle.copyWith(
-                color: PuzzleColors.white,
+                color: theme.isPathTheme
+                    ? PuzzleColors.white
+                    : PuzzleColors.white,
               ),
               duration: PuzzleThemeAnimationDuration.textStyle,
               child: Text(
