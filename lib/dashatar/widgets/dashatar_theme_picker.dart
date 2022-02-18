@@ -100,6 +100,12 @@ class _DashatarThemePickerState extends State<DashatarThemePicker> {
                               puzzle.tiles.length > 16) {
                             // fix: For Timer reset after switch from custom theme
                             context.read<TimerBloc>().add(const TimerReset());
+                            context.read<PuzzleBloc>().add(
+                                  PuzzleInitialized(
+                                    shufflePuzzle: false,
+                                    tileSize: 4,
+                                  ),
+                                );
                           }
 
                           // Update the current Dashatar theme.

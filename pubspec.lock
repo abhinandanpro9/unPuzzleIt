@@ -206,7 +206,7 @@ packages:
     source: hosted
     version: "0.0.4"
   just_audio_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: just_audio_platform_interface
       url: "https://pub.dartlang.org"

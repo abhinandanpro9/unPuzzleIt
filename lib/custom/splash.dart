@@ -32,8 +32,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final AudioPlayer _successAudioPlayer;
-  late final AudioPlayer _clickAudioPlayer;
-  late Timer _startTutorialTimer;
   late final prefs;
 
   Future<void> help() async {
@@ -43,7 +41,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
     if (!helpSplash!) {
       // Call help ssection
-      _startTutorialTimer = Timer(const Duration(milliseconds: 200), () async {
+      Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(
           barrierDismissible: true,
           context: context,
@@ -71,10 +69,9 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
     super.initState();
 
-    _successAudioPlayer = AudioPlayer()..setAsset('assets/audio/success.mp3');
-    unawaited(_successAudioPlayer.play());
+    _successAudioPlayer = widget._audioPlayerFactory();
 
-    _clickAudioPlayer = AudioPlayer()..setAsset('assets/audio/click.mp3');
+    _successAudioPlayer.setAsset('assets/audio/spinwheel_success.mp3');
 
     _controller = AnimationController(
       vsync: this,
@@ -88,9 +85,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _startTutorialTimer.cancel();
     _successAudioPlayer.dispose();
-    _clickAudioPlayer.dispose();
     _controller.dispose();
     super.dispose();
   }
@@ -140,7 +135,8 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
                         return Image(
                             height: widthImage,
-                            image: new AssetImage("assets/images/splash/hello.gif"));
+                            image: new AssetImage(
+                                "assets/images/splash/hello.gif"));
                       },
                     ),
 
@@ -210,6 +206,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                   verticalOffset: 40,
                                   child: IconButton(
                                       onPressed: () {
+                                        unawaited(_successAudioPlayer.play());
                                         // Path Theme
                                         context.read<DashatarThemeBloc>().add(
                                             DashatarThemeChanged(
@@ -226,6 +223,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                   verticalOffset: 40,
                                   child: IconButton(
                                       onPressed: () {
+                                        unawaited(_successAudioPlayer.play());
                                         // Custom Theme
                                         context.read<DashatarThemeBloc>().add(
                                             DashatarThemeChanged(
@@ -242,6 +240,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                   verticalOffset: 40,
                                   child: IconButton(
                                       onPressed: () {
+                                        unawaited(_successAudioPlayer.play());
                                         // Simple Theme
                                         context.read<DashatarThemeBloc>().add(
                                             DashatarThemeChanged(

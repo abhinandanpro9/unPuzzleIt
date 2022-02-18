@@ -51,6 +51,8 @@ class _AppState extends State<App> {
     'assets/audio/back_medium.mp3',
     'assets/audio/back_custom.mp3',
     'assets/audio/back_path.mp3',
+    'assets/audio/spinwheel_success.mp3',
+    'assets/audio/spinwheel.mp3',
   ];
 
   late final PlatformHelper _platformHelper;
@@ -146,10 +148,6 @@ class _AppState extends State<App> {
         context,
       );
       precacheImage(
-        Image.asset('assets/images/shuffle_icon.png').image,
-        context,
-      );
-      precacheImage(
         Image.asset('assets/images/timer_icon.png').image,
         context,
       );
@@ -183,10 +181,10 @@ class _AppState extends State<App> {
       await http.get(Uri.parse('$localAssetsPrefix$filePath'));
       return;
     }
-    throw UnimplementedError(
-      'The function `prefetchToMemory` is not implemented '
-      'for platforms other than Web.',
-    );
+    // throw UnimplementedError(
+    //   'The function `prefetchToMemory` is not implemented '
+    //   'for platforms other than Web.',
+    // );
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
@@ -36,7 +37,11 @@ class _SplashScreenInfo extends State<HelpInfo> with TickerProviderStateMixin {
 
   void exitHelp(BuildContext context) {
     Timer(const Duration(milliseconds: 2000), () async {
-      Navigator.of(context).pop();
+      try {
+        Navigator.of(context).pop();
+      } on Exception catch (ex) {
+        log(ex.toString());
+      }
     });
   }
 
@@ -57,7 +62,10 @@ class _SplashScreenInfo extends State<HelpInfo> with TickerProviderStateMixin {
           final textStyle = (currentSize == ResponsiveLayoutSize.large
                   ? PuzzleTextStyle.headline2
                   : PuzzleTextStyle.headline3)
-              .copyWith(color: Colors.white, fontFamily: 'GoogleSans', fontStyle: FontStyle.normal);
+              .copyWith(
+                  color: Colors.white,
+                  fontFamily: 'GoogleSans',
+                  fontStyle: FontStyle.normal);
 
           final textAlign = TextAlign.center;
 

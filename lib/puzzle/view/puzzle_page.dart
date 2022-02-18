@@ -297,17 +297,6 @@ class _PuzzleView extends State<PuzzleView>
               })),
       backgroundColor: Colors.transparent,
     );
-
-    // return Scaffold(
-    //   body: AnimatedCrossFade(
-    //     duration: const Duration(seconds: 3),
-    //     firstChild: _simpleTheme,
-    //     secondChild: _pathTheme,
-    //         // puzzleViewChooser(theme, _customTheme, _pathTheme, _simpleTheme),
-    //     crossFadeState:
-    //         !theme.isCustomTheme ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-    //   ),
-    // );
   }
 }
 
@@ -319,45 +308,49 @@ class _Puzzle extends StatefulWidget {
 }
 
 class _PuzzleCreate extends State<_Puzzle> {
-  late final AudioPlayer _player;
+  late AudioPlayer? _audioPlayer;
   late Timer timer;
   late String activeThemeTemp = '';
+  final AudioPlayerFactory _audioPlayerFactory = getAudioPlayer;
 
   @override
   void initState() {
     super.initState();
-    _player = AudioPlayer();
-
+    _audioPlayer = _audioPlayerFactory();
     // create: audio AudioControlListener can be used
     _init();
   }
 
   Future<void> _update(String assetPath) async {
-    await _player.setAsset(assetPath);
+    // if (Platform.isWindows) {
+    //   _audioPlayer!.dispose();
+    //   _audioPlayer = null;
+    //   _audioPlayer = _audioPlayerFactory();
+    //   async.unawaited(_audioPlayer!.setVolume(1));
+    //   async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one));
+    //   try {
+    //     async.unawaited(_audioPlayer!.play());
+    //   } on Exception catch (_) {
+    //     // log('Waiting for chrome permission');
+    //   }
+    // }
+    await _audioPlayer!.setAsset(assetPath);
   }
 
   Future<void> _init() async {
-    await _player.setAsset('assets/audio/back_medium.mp3');
-    async.unawaited(_player.setVolume(1));
-    async.unawaited(_player.setLoopMode(LoopMode.one));
+    // await _audioPlayer.setAsset('assets/audio/back_medium.mp3');
+    async.unawaited(_audioPlayer!.setVolume(1));
+    async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one));
     try {
-      async.unawaited(_player.play());
+      async.unawaited(_audioPlayer!.play());
     } on Exception catch (_) {
       // log('Waiting for chrome permission');
     }
-    // timer = Timer.periodic(
-    //   const Duration(seconds: 1),
-    //   (Timer t) async => {_update(t)},
-    // );
   }
-
-  // Future<void> _unInit() async {
-  //  if(timer.isActive){timer.cancel();}
-  // }
 
   @override
   void dispose() {
-    _player.dispose();
+    _audioPlayer!.dispose();
     super.dispose();
   }
 
@@ -368,44 +361,45 @@ class _PuzzleCreate extends State<_Puzzle> {
     final state = context.select((PuzzleBloc bloc) => bloc.state);
     final themeState = context.watch<DashatarThemeBloc>().state;
     final activeThemeAsset = themeState.theme.audioAssetBack;
-    final audioState = context.watch<AudioControlBloc>().state.muted;
 
     if (activeThemeTemp != activeThemeAsset) {
       activeThemeTemp = activeThemeAsset;
       _update(activeThemeAsset);
     }
-    async.unawaited(_player.setVolume((audioState) ? 0 : 1));
+    // async.unawaited(_audioPlayer.setVolume((audioState) ? 0 : 1));
 
     // final tileSize = context.select((PuzzleBloc bloc) => bloc.tileSize);
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            // todo: modified
-            // flow: unknown
-            // if (theme is SimpleTheme)
-            theme.layoutDelegate.backgroundBuilder(state),
-            SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
+    return AudioControlListener(
+        audioPlayer: _audioPlayer,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                // todo: modified
+                // flow: unknown
+                // if (theme is SimpleTheme)
+                theme.layoutDelegate.backgroundBuilder(state),
+                SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      children: const [
+                        PuzzleHeader(),
+                        PuzzleSections(),
+                      ],
+                    ),
+                  ),
                 ),
-                child: Column(
-                  children: const [
-                    PuzzleHeader(),
-                    PuzzleSections(),
-                  ],
-                ),
-              ),
-            ),
-            // todo: modified
-            // flow : THEME Dashatar Theme selector at bottom page
-            theme.layoutDelegate.backgroundBuilder(state),
-          ],
-        );
-      },
-    );
+                // todo: modified
+                // flow : THEME Dashatar Theme selector at bottom page
+                theme.layoutDelegate.backgroundBuilder(state),
+              ],
+            );
+          },
+        ));
   }
 }
 
@@ -477,11 +471,15 @@ class PuzzleLogo extends StatefulWidget {
 }
 
 class _PuzzleLogo extends State<PuzzleLogo> {
-  late final async.Timer _startTutorialTimer;
+  // late final async.Timer _startTutorialTimer;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Future<void> callHelp(String textHelp) async {
-    _startTutorialTimer =
-        async.Timer(const Duration(milliseconds: 500), () async {
+    async.Timer(const Duration(milliseconds: 500), () async {
       await showAppDialogCustom<void>(
         barrierDismissible: true,
         context: context,

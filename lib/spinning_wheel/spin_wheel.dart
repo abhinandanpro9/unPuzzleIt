@@ -128,7 +128,7 @@ class _SpinningWheelState extends State<SpinningWheel>
   late RenderBox? _renderBox;
 
   // subscription to the stream used to trigger an animation
-  late StreamSubscription _subscription;
+  late StreamSubscription? _subscription;
 
   @override
   void initState() {
@@ -319,7 +319,10 @@ class _SpinningWheelState extends State<SpinningWheel>
 
   dispose() {
     _animationController.dispose();
-    _subscription.cancel();
+    if (widget.shouldStartOrStop != null && _subscription != null) {
+      _subscription!.cancel();
+    }
+
     super.dispose();
   }
 }
