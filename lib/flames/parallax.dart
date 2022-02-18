@@ -7,8 +7,8 @@ class ParallaxBackground extends FlameGame {
   final _imageNames = [
     ParallaxImageData('parallax/bg.png'),
     ParallaxImageData('parallax/mountain-far.png'),
-    ParallaxImageData('parallax/mountains.png'),
-    ParallaxImageData('parallax/trees.png'),
+    // ParallaxImageData('parallax/mountains.png'),
+    // ParallaxImageData('parallax/trees.png'),
     ParallaxImageData('parallax/foreground-trees.png'),
   ];
 

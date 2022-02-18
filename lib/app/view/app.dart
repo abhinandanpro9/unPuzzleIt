@@ -65,6 +65,18 @@ class _AppState extends State<App> {
     _timer = Timer(const Duration(milliseconds: 20), () {
       for (var i = 1; i <= 15; i++) {
         precacheImage(
+          Image.asset('assets/images/parallax/bg.png').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/parallax/bg.png').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/parallax/bg.png').image,
+          context,
+        );
+        precacheImage(
           Image.asset('assets/images/hello.gif').image,
           context,
         );

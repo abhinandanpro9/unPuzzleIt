@@ -48,7 +48,7 @@ class PuzzleButtonCustom extends StatelessWidget {
       child: AnimatedTextButton(
         duration: PuzzleThemeAnimationDuration.textStyle,
         style: TextButton.styleFrom(
-          padding: EdgeInsets.all(10),
+          alignment: Alignment.center,
           textStyle: PuzzleTextStyle.headline5,
           shape: CircleBorder(),
         ).copyWith(

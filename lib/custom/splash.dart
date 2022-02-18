@@ -39,9 +39,9 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   Future<void> help() async {
     // Obtain shared preferences.
     prefs = await SharedPreferences.getInstance();
-    // final bool? helpSplash = prefs.getBool('helpSplash');
+    final bool? helpSplash = prefs.getBool('helpSplash');
 
-    if (true) {
+    if (!helpSplash!) {
       // Call help ssection
       _startTutorialTimer = Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(

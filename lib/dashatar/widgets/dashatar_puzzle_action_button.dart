@@ -201,7 +201,7 @@ class _DashatarPuzzleActionButtonState
                 unawaited(_audioPlayer.replay());
               },
         textColor: isLoading ? theme.defaultColor : null,
-        child: Text('+'),
+        child: Text('+',style: TextStyle(fontSize: 30)),
       ),
     );
 
