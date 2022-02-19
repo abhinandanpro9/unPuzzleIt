@@ -46,7 +46,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
       log("Hello "+ex.toString());
     }
 
-    if ((helpSplash!=null && helpSplash==false)) {
+    if ((helpSplash==null || helpSplash==false)) {
       // Call help ssection
       _helpTimer = Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(
@@ -140,7 +140,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                       child: (currentSize) {
                         final widthImage =
                             (currentSize == ResponsiveLayoutSize.large
-                                ? 200.0
+                                ? 150.0
                                 : 100.0);
 
                         return Image(
@@ -205,7 +205,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                         child: (currentSize) {
                           final widthImage =
                               (currentSize == ResponsiveLayoutSize.large
-                                  ? 75.0
+                                  ? 50.0
                                   : 50.0);
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -294,7 +294,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
                         final widthImage =
                             (currentSize == ResponsiveLayoutSize.large
-                                ? 300.0
+                                ? 250.0
                                 : 200.0);
 
                         return CustomRoulette(

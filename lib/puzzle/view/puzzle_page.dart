@@ -20,6 +20,7 @@ import 'package:gap/gap.dart';
 import 'package:image/image.dart' as image;
 import 'package:just_audio/just_audio.dart';
 import 'package:rainbow_color/rainbow_color.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
 import 'package:unpuzzle_it_abhi/colors/colors.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
@@ -472,7 +473,7 @@ class PuzzleLogo extends StatefulWidget {
 }
 
 class _PuzzleLogo extends State<PuzzleLogo> {
-  // late final async.Timer _startTutorialTimer;
+  late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   void initState() {
@@ -480,24 +481,34 @@ class _PuzzleLogo extends State<PuzzleLogo> {
   }
 
   Future<void> callHelp(String textHelp, Color bgColor) async {
-    async.Timer(const Duration(milliseconds: 500), () async {
-      await showAppDialogCustom<void>(
-        barrierDismissible: true,
-        context: context,
-        bgColor: bgColor,
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider.value(
-              value: context.read<DashatarThemeBloc>(),
+    final SharedPreferences prefs = await _prefs;
+    bool? helpSplash = false;
+    try {
+      helpSplash = prefs.getBool(textHelp);
+    } on Exception catch (ex) {
+      // log("Hello "+ex.toString());
+    }
+    if ((helpSplash == null || helpSplash == false)) {
+      async.Timer(const Duration(milliseconds: 500), () async {
+        await showAppDialogCustom<void>(
+          barrierDismissible: true,
+          context: context,
+          bgColor: bgColor,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: context.read<DashatarThemeBloc>(),
+              ),
+            ],
+            child: HelpInfo(
+              text: textHelp,
+              duration: 3000,
             ),
-          ],
-          child: HelpInfo(
-            text: textHelp,
-            duration: 3000,
           ),
-        ),
-      );
-    });
+        );
+      });
+      await prefs.setBool(textHelp, true);
+    }
   }
 
   @override
