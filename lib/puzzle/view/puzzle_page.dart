@@ -334,6 +334,7 @@ class _PuzzleCreate extends State<_Puzzle> {
     //     // log('Waiting for chrome permission');
     //   }
     // }
+
     await _audioPlayer!.setAsset(assetPath);
   }
 
@@ -478,11 +479,12 @@ class _PuzzleLogo extends State<PuzzleLogo> {
     super.initState();
   }
 
-  Future<void> callHelp(String textHelp) async {
+  Future<void> callHelp(String textHelp, Color bgColor) async {
     async.Timer(const Duration(milliseconds: 500), () async {
       await showAppDialogCustom<void>(
         barrierDismissible: true,
         context: context,
+        bgColor: bgColor,
         child: MultiBlocProvider(
           providers: [
             BlocProvider.value(
@@ -506,9 +508,9 @@ class _PuzzleLogo extends State<PuzzleLogo> {
 
     // Call help
     if (activeTheme.isCustomTheme) {
-      callHelp(context.l10n.customHelp);
+      callHelp(context.l10n.customHelp, Colors.orangeAccent);
     } else if (activeTheme.isPathTheme) {
-      callHelp(context.l10n.pathHelp);
+      callHelp(context.l10n.pathHelp, Colors.orangeAccent);
     }
 
     return AppFlutterLogo(

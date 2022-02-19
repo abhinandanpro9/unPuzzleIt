@@ -3,7 +3,8 @@ import 'package:unpuzzle_it_abhi/layout/responsive_layout_builder.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
 
 /// Displays the [AppDialog] above the current contents of the app.
-Future<T?> showAppDialogCustom<T>({
+/// Exclusively for Splash Screen 
+Future<T?> showAppDialogCustomSplash<T>({
   required BuildContext context,
   required Widget child,
   bool barrierDismissible = false,
@@ -29,16 +30,16 @@ Future<T?> showAppDialogCustom<T>({
       barrierLabel: barrierLabel,
       barrierColor: const Color(0x66000000),
       context: context,
-      pageBuilder: (context, animation, secondaryAnimation) => AppDialogCustom(
+      pageBuilder: (context, animation, secondaryAnimation) => AppDialogCustomSplash(
         child: child,
       ),
     );
 
 
 /// Displays the [AppDialog] above the current contents of the app.
-class AppDialogCustom extends StatelessWidget {
+class AppDialogCustomSplash extends StatelessWidget {
   /// {@macro app_dialog}
-  const AppDialogCustom({
+  const AppDialogCustomSplash({
     Key? key,
     required this.child,
   }) : super(key: key);
@@ -49,19 +50,18 @@ class AppDialogCustom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayoutBuilder(
-      small: (_, child) => child!,
-      // Material(
-      //   child: SizedBox(
-      //     width: double.infinity,
-      //     height: double.infinity,
-      //     child: child,
-      //   ),
-      // ),
+      small: (_, __) => Material(
+        child: SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+          child: child,
+        ),
+      ),
       medium: (_, child) => child!,
       large: (_, child) => child!,
       child: (currentSize) {
-        final dialogWidth =
-            currentSize == ResponsiveLayoutSize.large ? 740.0 : 700.0;
+        // final dialogWidth =
+        //     currentSize == ResponsiveLayoutSize.large ? 740.0 : 700.0;
 
         return Dialog(
           clipBehavior: Clip.hardEdge,
@@ -72,7 +72,7 @@ class AppDialogCustom extends StatelessWidget {
             ),
           ),
           child: SizedBox(
-            width: dialogWidth,
+            width: double.infinity,
             child: child,
           ),
         );

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,19 +33,26 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final AudioPlayer _successAudioPlayer;
-  late final prefs;
+  late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late Timer _helpTimer;
 
   Future<void> help() async {
     // Obtain shared preferences.
-    prefs = await SharedPreferences.getInstance();
-    final bool? helpSplash = prefs.getBool('helpSplash');
+    final SharedPreferences prefs = await _prefs;
+    bool? helpSplash = false;
+    try {
+      helpSplash = prefs.getBool('helpSplash');
+    } on Exception catch (ex) {
+      log("Hello "+ex.toString());
+    }
 
-    if (!helpSplash!) {
+    if ((helpSplash!=null && helpSplash==false)) {
       // Call help ssection
-      Timer(const Duration(milliseconds: 200), () async {
+      _helpTimer = Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(
           barrierDismissible: true,
           context: context,
+          bgColor: Colors.white,
           child: MultiBlocProvider(
             providers: [
               BlocProvider.value(
@@ -54,6 +62,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
             child: HelpInfo(
               text: context.l10n.mainTitleHelp,
               duration: 2000,
+              color: Colors.blueAccent,
             ),
           ),
         );
@@ -64,10 +73,10 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
+
     //Call Help section
     help();
-
-    super.initState();
 
     _successAudioPlayer = widget._audioPlayerFactory();
 
@@ -87,6 +96,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   void dispose() {
     _successAudioPlayer.dispose();
     _controller.dispose();
+    if(_helpTimer.isActive)_helpTimer.cancel();
     super.dispose();
   }
 

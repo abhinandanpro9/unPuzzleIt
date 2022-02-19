@@ -15,10 +15,12 @@ class HelpInfo extends StatefulWidget {
     Key? key,
     required this.text,
     required this.duration,
+    this.color = Colors.white,
   }) : super(key: key);
 
   final String text;
   final int duration;
+  final Color color;
 
   @override
   State<HelpInfo> createState() => _SplashScreenInfo();
@@ -63,7 +65,7 @@ class _SplashScreenInfo extends State<HelpInfo> with TickerProviderStateMixin {
                   ? PuzzleTextStyle.headline2
                   : PuzzleTextStyle.headline3)
               .copyWith(
-                  color: Colors.white,
+                  color: widget.color,
                   fontFamily: 'GoogleSans',
                   fontStyle: FontStyle.normal);
 

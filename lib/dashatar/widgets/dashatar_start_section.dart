@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:unpuzzle_it_abhi/colors/colors.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
@@ -46,7 +45,7 @@ class _DashatarStartSection extends State<DashatarStartSection> {
         PuzzleTitle(
           key: puzzleTitleKey,
           title: theme.themeTitle,
-          color: (theme.isPathTheme) ? PuzzleColors.pathPrimary : null,
+          // color: (theme.isPathTheme) ? PuzzleColors.pathPrimary : null,
         ),
         const ResponsiveGap(
           small: 12,
