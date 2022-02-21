@@ -93,8 +93,8 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
   @override
   Widget build(BuildContext context) {
     final size = widget.state.puzzle.getDimension();
-
-    // debugPrint('Tile Size: $size');
+    final puzzle = widget.state.puzzle;
+    final zuppSize = 1.5;
 
     final theme = context.select((DashatarThemeBloc bloc) => bloc.state.theme);
     final status =
@@ -109,6 +109,8 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
         : const Duration(milliseconds: 370);
 
     final canPress = hasStarted && puzzleIncomplete;
+
+    final spriteTile = puzzleIncomplete ? puzzle.getCorrectSeq(theme.pathMap) : 1;
 
     return Stack(
       children: [
@@ -181,13 +183,13 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
         ),
         if (!theme.isCustomTheme &&
             theme.isPathTheme &&
-            widget.tile.value == 10)
+            widget.tile.value == spriteTile)
           AudioControlListener(
             audioPlayer: _audioPlayer,
             child: AnimatedAlign(
               alignment: FractionalOffset(
-                (widget.tile.currentPosition.x - 1) / (size - 1),
-                (widget.tile.currentPosition.y - 1) / (size - 1),
+                (widget.tile.currentPosition.x - 1) / (size - 0.5),
+                (widget.tile.currentPosition.y - 1) / (size - 0.5),
               ),
               duration: movementDuration,
               curve: Curves.easeInOut,
@@ -203,8 +205,8 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
                       scale: _scale,
                       child: GameWidget(
                         game: FlameCustomCharacter(
-                            width: _TileSize.small / 2,
-                            height: _TileSize.small / 2),
+                            width: _TileSize.small / zuppSize,
+                            height: _TileSize.small / zuppSize),
                       ),
                     ),
                   ),
@@ -220,8 +222,8 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
                       scale: _scale,
                       child: GameWidget(
                         game: FlameCustomCharacter(
-                            width: _TileSize.medium / 2,
-                            height: _TileSize.medium / 2),
+                            width: _TileSize.medium / zuppSize,
+                            height: _TileSize.medium / zuppSize),
                       ),
                     ),
                   ),
@@ -237,8 +239,8 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
                       scale: _scale,
                       child: GameWidget(
                         game: FlameCustomCharacter(
-                            width: _TileSize.large / 2,
-                            height: _TileSize.large / 2),
+                            width: _TileSize.large / zuppSize,
+                            height: _TileSize.large / zuppSize),
                       ),
                     ),
                   ),

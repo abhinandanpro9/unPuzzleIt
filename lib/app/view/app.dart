@@ -53,6 +53,7 @@ class _AppState extends State<App> {
     'assets/audio/back_path.mp3',
     'assets/audio/spinwheel_success.mp3',
     'assets/audio/spinwheel.mp3',
+    'assets/audio/confetti.mp3',
   ];
 
   late final PlatformHelper _platformHelper;

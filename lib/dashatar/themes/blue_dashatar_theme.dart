@@ -27,6 +27,9 @@ class BlueDashatarTheme extends DashatarTheme {
   Color get defaultColor => PuzzleColors.blue90;
 
   @override
+  Color get shareColor => PuzzleColors.blue90;
+
+  @override
   Color get buttonColor => PuzzleColors.blue50;
 
   @override

@@ -32,9 +32,9 @@ class FlameCustomCharacter extends FlameGame with TapDetector {
     final idle = await loadSpriteAnimation(
       'parallax/ember.png',
       SpriteAnimationData.sequenced(
-        amount: 4,
-        stepTime: 0.4,
-        textureSize: Vector2(16, 18),
+        amount: 15,
+        stepTime: 0.1,
+        textureSize: Vector2(614, 564),
       ),
     );
 

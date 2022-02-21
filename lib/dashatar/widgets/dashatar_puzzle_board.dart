@@ -49,7 +49,7 @@ class _DashatarPuzzleBoardState extends State<DashatarPuzzleBoard> {
       listener: (context, state) async {
         if (state.puzzleStatus == PuzzleStatus.complete) {
           _completePuzzleTimer =
-              Timer(const Duration(milliseconds: 370), () async {
+              Timer(const Duration(milliseconds: 750), () async {
             await showAppDialog<void>(
               context: context,
               child: MultiBlocProvider(

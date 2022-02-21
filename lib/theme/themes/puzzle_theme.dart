@@ -16,6 +16,9 @@ abstract class PuzzleTheme extends Equatable {
   // create:
   bool get isPathTheme;
 
+  // Map of correct paths
+  List<int> get pathMap;
+
   /// The display name of this theme.
   String get name;
 
@@ -36,6 +39,7 @@ abstract class PuzzleTheme extends Equatable {
   /// Applied to the text color of the score and
   /// the default background color of puzzle tiles.
   Color get defaultColor;
+  Color get shareColor;
 
   /// The button color of this theme.
   ///

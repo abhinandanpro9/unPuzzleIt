@@ -101,7 +101,7 @@ class DashatarScore extends StatelessWidget {
                         width: completedTextWidth,
                         child: AnimatedDefaultTextStyle(
                           style: PuzzleTextStyle.headline5.copyWith(
-                            color: theme.defaultColor,
+                            color: theme.shareColor,
                           ),
                           duration: PuzzleThemeAnimationDuration.textStyle,
                           child: Text(l10n.dashatarSuccessCompleted),
@@ -128,7 +128,7 @@ class DashatarScore extends StatelessWidget {
                       AnimatedDefaultTextStyle(
                         key: const Key('dashatar_score_score'),
                         style: PuzzleTextStyle.headline5.copyWith(
-                          color: theme.defaultColor,
+                          color: theme.shareColor,
                         ),
                         duration: PuzzleThemeAnimationDuration.textStyle,
                         child: Text(l10n.dashatarSuccessScore),

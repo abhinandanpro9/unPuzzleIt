@@ -9,7 +9,7 @@ import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/typography/typography.dart';
 
 /// The url to share for this Flutter Puzzle challenge.
-const _shareUrl = 'https://flutterhack.devpost.com/';
+const _shareUrl = 'https://abhinandanbr.github.io/#/';
 
 /// {@template dashatar_twitter_button}
 /// Displays a button that shares the Flutter Puzzle challenge

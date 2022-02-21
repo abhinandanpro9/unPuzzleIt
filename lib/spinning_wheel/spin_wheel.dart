@@ -128,6 +128,7 @@ class _SpinningWheelState extends State<SpinningWheel>
   late RenderBox? _renderBox;
 
   // subscription to the stream used to trigger an animation
+  // ignore: cancel_subscriptions
   late StreamSubscription? _subscription;
 
   @override

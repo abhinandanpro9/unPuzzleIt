@@ -42,7 +42,7 @@ class Puzzle extends Equatable {
 
   /// List of [Tile]s to store the tiles shuffle order.
   // final List<Tile> tilesProcess;
-  
+
   /// Get the dimension of a puzzle given its tile arrangement.
   ///
   /// Ex: A 4x4 puzzle has a dimension of 4.
@@ -66,6 +66,24 @@ class Puzzle extends Equatable {
           tile.currentPosition.y ==
               whitespaceTile.currentPosition.y + relativeOffset.dy,
     );
+  }
+
+  /// Gets the index till correct order of tiles
+  int getCorrectSeq(List<int> pathMap) {
+    var index = 1;
+    for (final tile in tiles) {
+      if (tile.value != index && pathMap.contains(index)) {
+        break;
+      }
+      index++;
+    }
+    if (pathMap.length != 0 && (index - 1) != 0) {
+      while (!pathMap.contains(index - 1)) {
+        index--;
+      }
+    }
+
+    return (index - 1) == 0 ? 1 : index - 1;
   }
 
   /// Gets the number of tiles that are currently in their correct position.
@@ -180,16 +198,16 @@ class Puzzle extends Equatable {
             tile.currentPosition.y == shiftPointY,
       );
       tilesToSwap.add(tile);
-      return moveTiles(tileToSwapWith, tilesToSwap,tilesProcess);
+      return moveTiles(tileToSwapWith, tilesToSwap, tilesProcess);
     } else {
       tilesToSwap.add(tile);
-      return _swapTiles(tilesToSwap,tilesProcess);
+      return _swapTiles(tilesToSwap, tilesProcess);
     }
   }
 
   /// Returns puzzle with new tile arrangement after individually swapping each
   /// tile in tilesToSwap with the whitespace.
-  Puzzle _swapTiles(List<Tile> tilesToSwap,List<int> tilesProcess) {
+  Puzzle _swapTiles(List<Tile> tilesToSwap, List<int> tilesProcess) {
     for (final tileToSwap in tilesToSwap.reversed) {
       final tileIndex = tiles.indexOf(tileToSwap);
       final tile = tiles[tileIndex];

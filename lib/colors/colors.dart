@@ -81,7 +81,7 @@ abstract class PuzzleColors {
   static const Color pathPrimary = Color.fromARGB(255, 0, 103, 60);
 
   /// Yellow 90
-  static const Color path90 = Color.fromARGB(255, 117, 255, 225);
+  static const Color path90 = Color.fromARGB(255, 0, 24, 103);
 
   /// Yellow 50
   static const Color path50 = Color.fromARGB(255, 97, 158, 0);

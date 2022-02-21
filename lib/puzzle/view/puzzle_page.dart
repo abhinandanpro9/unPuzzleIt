@@ -322,7 +322,7 @@ class _PuzzleCreate extends State<_Puzzle> {
     _init();
   }
 
-  Future<void> _update(String assetPath) async {
+  Future<void> _update(String assetPath, bool loop) async {
     // if (Platform.isWindows) {
     //   _audioPlayer!.dispose();
     //   _audioPlayer = null;
@@ -337,6 +337,10 @@ class _PuzzleCreate extends State<_Puzzle> {
     // }
 
     await _audioPlayer!.setAsset(assetPath);
+    loop
+        ? async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one))
+        : async.unawaited(_audioPlayer!.setLoopMode(LoopMode.off));
+    ;
   }
 
   Future<void> _init() async {
@@ -363,10 +367,16 @@ class _PuzzleCreate extends State<_Puzzle> {
     final state = context.select((PuzzleBloc bloc) => bloc.state);
     final themeState = context.watch<DashatarThemeBloc>().state;
     final activeThemeAsset = themeState.theme.audioAssetBack;
+    final puzzleStatus =
+        context.select((PuzzleBloc bloc) => bloc.state.puzzleStatus);
 
     if (activeThemeTemp != activeThemeAsset) {
       activeThemeTemp = activeThemeAsset;
-      _update(activeThemeAsset);
+      _update(activeThemeAsset, true);
+    }
+    if (puzzleStatus == PuzzleStatus.complete ||
+        puzzleStatus == PuzzleStatus.reversed) {
+      _update('assets/audio/confetti.mp3', false);
     }
     // async.unawaited(_audioPlayer.setVolume((audioState) ? 0 : 1));
 
@@ -486,7 +496,7 @@ class _PuzzleLogo extends State<PuzzleLogo> {
     try {
       helpSplash = prefs.getBool(textHelp);
     } on Exception catch (ex) {
-      // log("Hello "+ex.toString());
+      dev.log(ex.toString());
     }
     if ((helpSplash == null || helpSplash == false)) {
       async.Timer(const Duration(milliseconds: 500), () async {

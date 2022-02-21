@@ -18,6 +18,9 @@ class PathDashatarTheme extends DashatarTheme {
   bool get isCustomTheme => false;
 
   @override
+  List<int> get  pathMap => [1, 2, 3, 6, 7, 10, 14, 15, 16];
+
+  @override
   bool get isPathTheme => true;
 
   @override
@@ -28,6 +31,9 @@ class PathDashatarTheme extends DashatarTheme {
 
   @override
   Color get defaultColor => PuzzleColors.pathPrimary;
+
+  @override
+  Color get shareColor => Color.fromARGB(255, 74, 231, 210);
 
   @override
   Color get buttonColor => PuzzleColors.path50;

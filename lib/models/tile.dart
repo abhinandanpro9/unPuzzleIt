@@ -10,11 +10,15 @@ class Tile extends Equatable {
     required this.value,
     required this.correctPosition,
     required this.currentPosition,
+    this.jumpVal = 0,
     this.isWhitespace = false,
   });
 
   /// Value representing the correct position of [Tile] in a list.
   final int value;
+
+    /// Value representing the correct position of [Tile] in a list.
+  final int jumpVal;
 
   /// The correct 2D [Position] of the [Tile]. All tiles must be in their
   /// correct position to complete the puzzle.
@@ -30,6 +34,7 @@ class Tile extends Equatable {
   Tile copyWith({required Position currentPosition}) {
     return Tile(
       value: value,
+      jumpVal: jumpVal,
       correctPosition: correctPosition,
       currentPosition: currentPosition,
       isWhitespace: isWhitespace,
@@ -38,6 +43,7 @@ class Tile extends Equatable {
 
   @override
   List<Object> get props => [
+        jumpVal,
         value,
         correctPosition,
         currentPosition,

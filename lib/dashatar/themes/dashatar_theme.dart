@@ -53,6 +53,9 @@ abstract class DashatarTheme extends PuzzleTheme {
   Color get menuUnderlineColor => PuzzleColors.white;
 
   @override
+  List<int> get pathMap => [];
+
+  @override
   PuzzleLayoutDelegate get layoutDelegate =>
       const DashatarPuzzleLayoutDelegate();
 
@@ -104,6 +107,7 @@ abstract class DashatarTheme extends PuzzleTheme {
         titleColor,
         backgroundColor,
         defaultColor,
+        shareColor,
         buttonColor,
         hoverColor,
         pressedColor,
@@ -119,6 +123,7 @@ abstract class DashatarTheme extends PuzzleTheme {
         successThemeAsset,
         audioAsset,
         dashAssetsDirectory,
-        audioAssetBack
+        audioAssetBack,
+        pathMap
       ];
 }
