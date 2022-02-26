@@ -340,7 +340,6 @@ class _PuzzleCreate extends State<_Puzzle> {
     loop
         ? async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one))
         : async.unawaited(_audioPlayer!.setLoopMode(LoopMode.off));
-    ;
   }
 
   Future<void> _init() async {
@@ -432,6 +431,15 @@ class PuzzleHeader extends StatelessWidget {
           children: [
             const Align(
               child: PuzzleLogo(),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 34*2),
+                child: HelpControl(
+                  key: helpControlKey,
+                ),
+              ),
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -1095,9 +1103,13 @@ class PuzzleMenu extends StatelessWidget {
             return Row(
               children: [
                 const Gap(44),
+                HelpControl(
+                  key: helpControlKey,
+                ),
+                const Gap(24),
                 AudioControl(
                   key: audioControlKey,
-                )
+                ),
               ],
             );
           },
@@ -1244,3 +1256,4 @@ final numberOfMovesAndTilesLeftKey =
 /// Used to animate the transition of [AudioControl]
 /// when changing a theme.
 final audioControlKey = GlobalKey(debugLabel: 'audio_control');
+final helpControlKey = GlobalKey(debugLabel: 'ahelp_control');

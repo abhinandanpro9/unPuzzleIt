@@ -72,6 +72,10 @@ class _AppState extends State<App> {
           context,
         );
         precacheImage(
+          Image.asset('assets/images/help.png').image,
+          context,
+        );
+        precacheImage(
           Image.asset('assets/images/parallax/mountain-far.png').image,
           context,
         );

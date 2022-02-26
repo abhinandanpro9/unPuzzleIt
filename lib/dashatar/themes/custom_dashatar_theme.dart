@@ -15,7 +15,7 @@ class CustomDashatarTheme extends DashatarTheme {
       context.l10n.dashatarGreenDashLabelText;
 
   @override
-  String get themeTitle => 'Go Custom! Go Crazy!';
+  String get themeTitle => 'Go Custom!\nGo Crazy!';
 
   @override
   bool get isCustomTheme => true;

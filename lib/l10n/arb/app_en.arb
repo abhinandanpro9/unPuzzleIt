@@ -8,6 +8,10 @@
     "@mainTitleHelp": {
         "description": "Shown as a Help during start"
     },
+    "defHelp": "Simple Puzzle!!\nHit Start to shuffle the image!\nSolve the puzzle and enjoy!",
+    "@defHelp": {
+        "description": "Shown as a Help during start"
+    },
     "customHelp": "Use + button!!\n\nDon't forget to customize the GRID size!!",
     "@customHelp": {
         "description": "Shown as a Help during start"
