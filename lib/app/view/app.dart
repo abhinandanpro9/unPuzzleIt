@@ -103,10 +103,10 @@ class _AppState extends State<App> {
           Image.asset('assets/images/splash/bored.gif').image,
           context,
         );
-        precacheImage(
-          Image.asset('assets/images/dashatar/custom/$i.png').image,
-          context,
-        );
+        // precacheImage(
+        //   Image.asset('assets/images/dashatar/custom/$i.png').image,
+        //   context,
+        // );
         precacheImage(
           Image.asset('assets/images/dashatar/blue/$i.png').image,
           context,

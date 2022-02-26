@@ -4,7 +4,7 @@
     "@mainTitle": {
         "description": "Shown as a Title during start"
     },
-    "mainTitleHelp": "Select a mood!\n\nOR\n\nSpin the Wheel!",
+    "mainTitleHelp": "Select a Mood!\n\nOR\n\nSpin the Wheel!",
     "@mainTitleHelp": {
         "description": "Shown as a Help during start"
     },
