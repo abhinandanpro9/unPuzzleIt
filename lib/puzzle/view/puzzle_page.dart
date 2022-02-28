@@ -319,38 +319,7 @@ class _PuzzleCreate extends State<_Puzzle> {
     super.initState();
     _audioPlayer = _audioPlayerFactory();
     // create: audio AudioControlListener can be used
-    _init();
-  }
-
-  Future<void> _update(String assetPath, bool loop) async {
-    // if (Platform.isWindows) {
-    //   _audioPlayer!.dispose();
-    //   _audioPlayer = null;
-    //   _audioPlayer = _audioPlayerFactory();
-    //   async.unawaited(_audioPlayer!.setVolume(1));
-    //   async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one));
-    //   try {
-    //     async.unawaited(_audioPlayer!.play());
-    //   } on Exception catch (_) {
-    //     // log('Waiting for chrome permission');
-    //   }
-    // }
-
-    await _audioPlayer!.setAsset(assetPath);
-    loop
-        ? async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one))
-        : async.unawaited(_audioPlayer!.setLoopMode(LoopMode.off));
-  }
-
-  Future<void> _init() async {
-    // await _audioPlayer.setAsset('assets/audio/back_medium.mp3');
-    async.unawaited(_audioPlayer!.setVolume(1));
-    async.unawaited(_audioPlayer!.setLoopMode(LoopMode.one));
-    try {
-      async.unawaited(_audioPlayer!.play());
-    } on Exception catch (_) {
-      // log('Waiting for chrome permission');
-    }
+    AllUtils.audioInit(_audioPlayer);
   }
 
   @override
@@ -371,11 +340,11 @@ class _PuzzleCreate extends State<_Puzzle> {
 
     if (activeThemeTemp != activeThemeAsset) {
       activeThemeTemp = activeThemeAsset;
-      _update(activeThemeAsset, true);
+      AllUtils.audioUpdate(_audioPlayer, activeThemeAsset, true);
     }
     if (puzzleStatus == PuzzleStatus.complete ||
         puzzleStatus == PuzzleStatus.reversed) {
-      _update('assets/audio/confetti.mp3', false);
+      AllUtils.audioUpdate(_audioPlayer, 'assets/audio/confetti.mp3', false);
     }
     // async.unawaited(_audioPlayer.setVolume((audioState) ? 0 : 1));
 
@@ -435,7 +404,7 @@ class PuzzleHeader extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               child: Padding(
-                padding: const EdgeInsets.only(right: 34*2),
+                padding: const EdgeInsets.only(right: 34 * 2),
                 child: HelpControl(
                   key: helpControlKey,
                 ),
@@ -708,7 +677,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   bool _userAborted = false;
   bool _customPuzzleChange = false;
   Image? _imageMain;
-  late Uint8List tempBytes;
+  late Uint8List tempBytes = new Uint8List(2);
   late Widget _paintWidget = RepaintBoundary(
     key: _globalKey,
     child: Container(
@@ -770,169 +739,30 @@ class _PuzzleBoard extends State<PuzzleBoard> {
     if (!mounted) return;
   }
 
-  // Function to parse image from the widget
-  Future<image.Image?>? _getImageFromWidget() async {
-    RenderRepaintBoundary boundary =
-        _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-
-    // Size size = boundary.size;
-    var img = await boundary.toImage();
-    var byteData = await img.toByteData(format: ImageByteFormat.png);
-    var pngBytes = byteData!.buffer.asUint8List();
-
-    return image.decodeImage(pngBytes);
-  }
-
   // Function to parse image from the widget and split to tiles
   Future<void> _parseWidget(int size) async {
     if (_imageMain == null) return;
-    // Make null before access; Useful for reloading
-    _tileImageList = [];
+    _tileImageList = await AllUtils.parseWidget(
+        size, _globalKey, _offset, tempBytes, _imageMain, context);
 
-    // Get painted image
-    image.Image? _image = await _getImageFromWidget();
+    _imageMain = AllUtils.getImage();
 
-    image.Image? tempCropTiles;
-
-    double sizeTile = _TileSize.large;
-
-    if (kIsWeb) {
-    } else if (Platform.isAndroid || Platform.isIOS) {
-      sizeTile = _TileSize.small;
-    }
-
-    // fix: For size exceeding max display width
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    // fix: For size exceeding max display width
-    if (screenWidth <= PuzzleBreakpoints.small) {
-      sizeTile = min(_TileSize.small, (screenWidth - _offset) / size);
-    } else if (screenWidth <= PuzzleBreakpoints.medium) {
-      sizeTile = min(_TileSize.medium, (screenWidth - _offset) / size);
-    } else if (screenWidth <= PuzzleBreakpoints.large) {
-      sizeTile = min(_TileSize.large, (screenWidth - _offset) / size);
-    } else {
-      sizeTile = min(_TileSize.large, (screenWidth - _offset) / size);
-    }
-
-    var index = 0;
-
-    // Crop image to cube and store as widget
-    for (; index < size * size; index++) {
-      Size sizeBox = Size(sizeTile, sizeTile);
-
-      var offsetTemp = Offset(
-        index % size * sizeBox.width,
-        index ~/ size * sizeBox.height,
-      );
-
-      if (_imageMain != null) {
-        tempCropTiles = image.copyCrop(
-          _image!,
-          offsetTemp.dx.round(),
-          offsetTemp.dy.round(),
-          sizeTile.toInt(),
-          sizeTile.toInt(),
-        );
-        tempBytes = Uint8List.fromList(image.encodePng(tempCropTiles));
-
-        _imageMain = Image.memory(
-          tempBytes,
-        );
-
-        _tileImageList.add(ClipRRect(
-          borderRadius: BorderRadius.circular(10), // Image border
-          child: SizedBox.fromSize(
-            size: const Size.fromRadius(100), // Image radius
-            child: _imageMain,
-          ),
-        ));
-      }
-
-      setState(() {
-        dev.log('crop success');
-        _isImageLoaded = false;
-        _isAllSuccess = true;
-      });
-    }
+    setState(() {
+      dev.log('crop success');
+      _isImageLoaded = false;
+      _isAllSuccess = true;
+    });
   }
 
   // Function to parse the file and paint on canvas
   Future<void> _parseFile(double size, bool customPuzzleChange) async {
     if (filePath == null) return;
 
-    if (kIsWeb) {
-      var _bytes = Uint8List.fromList(filePath!.files[0].bytes as Uint8List);
+     ParseFileClass parseWid =
+        await AllUtils.parseFile(size, filePath, context, _offset, _globalKey);
 
-      // image.Image _image = image.decodePng(File(filePath!.files[0].path as String).readAsBytesSync())!;
-      _imageMain = Image.memory(_bytes);
-    } else if (Platform.isAndroid || Platform.isIOS || Platform.isWindows) {
-      // Android-specific code
-      // iOS-specific code
-      _imageMain = Image.file(File(filePath!.files[0].path!));
-    } else {
-      var _bytes = Uint8List.fromList(filePath!.files[0].bytes as Uint8List);
-
-      // image.Image _image = image.decodePng(File(filePath!.files[0].path as String).readAsBytesSync())!;
-      _imageMain = Image.memory(_bytes);
-    }
-
-    if (_imageMain == null) return;
-
-    // Make sure width is not greater than screen width
-    // fix: For size exceeding max display width
-    final screenWidth = MediaQuery.of(context).size.width - _offset;
-
-    // First show the image in order to get get the image and crop
-    const textStyle = TextStyle(
-      color: Color(0xFFFFFFFF),
-      fontSize: 34,
-      fontWeight: PuzzleFontWeight.bold,
-    );
-    _paintWidget = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            CircularProgressIndicator(),
-            Padding(padding: EdgeInsets.all(10)),
-            AnimatedDefaultTextStyle(
-              style: textStyle,
-              duration: PuzzleThemeAnimationDuration.textStyle,
-              child: Text('Loading...'),
-            ),
-          ],
-        ),
-        RepaintBoundary(
-          key: _globalKey,
-          child: ResponsiveLayoutBuilder(
-            large: (_, child) => Container(
-              // color: Colors.red,
-              padding: const EdgeInsets.all(10),
-              height: min(_TileSize.large * size, screenWidth),
-              width: min(_TileSize.large * size, screenWidth),
-              child: _imageMain as Widget,
-            ),
-            medium: (_, child) => Container(
-              // color: Colors.red,
-              padding: const EdgeInsets.all(10),
-              height: min(_TileSize.medium * size, screenWidth),
-              width: min(_TileSize.medium * size, screenWidth),
-              child: _imageMain as Widget,
-            ),
-            small: (_, child) => Container(
-              // color: Colors.red,
-              padding: const EdgeInsets.all(10),
-              height: min(_TileSize.small * size, screenWidth),
-              width: min(_TileSize.small * size, screenWidth),
-              child: _imageMain as Widget,
-            ),
-          ),
-        ),
-      ],
-    );
+    _paintWidget = parseWid.getWiget();
+    _imageMain = parseWid.getImage();
 
     // Wait for some time and then post update
     async.Timer(const Duration(seconds: 2), () async {

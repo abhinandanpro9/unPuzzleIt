@@ -8,7 +8,7 @@
     "@mainTitleHelp": {
         "description": "Shown as a Help during start"
     },
-    "defHelp": "Simple Puzzle!!\nHit Start to shuffle the image!\nSolve the puzzle and enjoy!",
+    "defHelp": "Simple Puzzle!!\nHit Start to shuffle the image!\nSolve the puzzle!",
     "@defHelp": {
         "description": "Shown as a Help during start"
     },
@@ -16,7 +16,7 @@
     "@customHelp": {
         "description": "Shown as a Help during start"
     },
-    "pathHelp": "Help Zupp get the GOLD!!",
+    "pathHelp": "Help Zupp get the GOLD!!\nUse GOLD tile as reference",
     "@pathHelp": {
         "description": "Shown as a Help during start"
     },
