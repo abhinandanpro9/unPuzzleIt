@@ -34,5 +34,13 @@
       "program": "lib/main.dart",
       "args": ["-d", "emulator-5554"]
     },
+
+    {
+      "name": "Launch Android Dev",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["-d", "c457d017"]
+    },
   ]
 }

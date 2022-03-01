@@ -38,7 +38,7 @@ class AllUtils {
 
   static Future<void> audioInit(_audioPlayer) async {
     // await _audioPlayer.setAsset('assets/audio/back_medium.mp3');
-    unawaited(_audioPlayer!.setVolume(1));
+    unawaited(_audioPlayer!.setVolume(1.0));
     unawaited(_audioPlayer!.setLoopMode(LoopMode.one));
     try {
       unawaited(_audioPlayer!.play());

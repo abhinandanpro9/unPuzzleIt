@@ -34,7 +34,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final AudioPlayer _successAudioPlayer;
   late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late Timer? _helpTimer;
+  // late Timer? _helpTimer;
 
   Future<void> help() async {
     // Obtain shared preferences.
@@ -48,7 +48,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 
     if ((helpSplash==null || helpSplash==false)) {
       // Call help ssection
-      _helpTimer = Timer(const Duration(milliseconds: 200), () async {
+      Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(
           barrierDismissible: true,
           context: context,
@@ -96,7 +96,7 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   void dispose() {
     _successAudioPlayer.dispose();
     _controller.dispose();
-    if(_helpTimer!=null && _helpTimer!.isActive)_helpTimer!.cancel();
+    // if(_helpTimer!=null && _helpTimer!.isActive)_helpTimer!.cancel();
     super.dispose();
   }
 
