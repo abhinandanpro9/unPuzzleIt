@@ -7,3 +7,5 @@ export 'custom_helper_splash.dart';
 export 'help.dart';
 export 'achievements.dart';
 export 'utils.dart';
+export 'custom_achieve.dart';
+export 'loading.dart';

@@ -7,21 +7,25 @@
 
 // ignore_for_file: public_member_api_docs, avoid_print
 
-import 'dart:async';
+import 'dart:async' as async;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
+import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
 
 class App extends StatefulWidget {
-  const App({Key? key, ValueGetter<PlatformHelper>? platformHelperFactory})
+  App(this.themeIndex,
+      {Key? key, ValueGetter<PlatformHelper>? platformHelperFactory})
       : _platformHelperFactory = platformHelperFactory ?? getPlatformHelper,
         super(key: key);
 
   final ValueGetter<PlatformHelper> _platformHelperFactory;
+  int themeIndex;
 
   @override
   State<App> createState() => _AppState();
@@ -57,15 +61,19 @@ class _AppState extends State<App> {
   ];
 
   late final PlatformHelper _platformHelper;
-  late final Timer _timer;
+  late final async.Timer _timer;
+  late final SplashScreen splashScreen;
 
   @override
   void initState() {
     super.initState();
+    splashScreen = const SplashScreen();
+
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
     _platformHelper = widget._platformHelperFactory();
 
-    _timer = Timer(const Duration(milliseconds: 20), () {
+    _timer = async.Timer(const Duration(milliseconds: 20), () {
       for (var i = 1; i <= 15; i++) {
         precacheImage(
           Image.asset('assets/images/parallax/bg.png').image,
@@ -91,10 +99,10 @@ class _AppState extends State<App> {
           Image.asset('assets/images/splash/roulette-center.png').image,
           context,
         );
-        precacheImage(
-          Image.asset('assets/images/splash/hello.gif').image,
-          context,
-        );
+        // precacheImage(
+        //   Image.asset('assets/images/splash/hello.gif').image,
+        //   context,
+        // );
         precacheImage(
           Image.asset('assets/images/splash/happy.gif').image,
           context,
@@ -198,23 +206,21 @@ class _AppState extends State<App> {
     super.dispose();
   }
 
+  void splashCallback(int themeindex) {
+    setState(() {
+      widget.themeIndex = themeindex;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(color: Color(0xFF13B9FF)),
-        colorScheme: ColorScheme.fromSwatch(
-          accentColor: const Color(0xFF13B9FF),
-        ),
-      ),
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: Stack(
+    return Scaffold(
+      body: Stack(
         children: [
-          const PuzzlePage(),
+          PuzzlePage(widget.themeIndex),
+          // SplashScreen(
+          //   callback: splashCallback,
+          // )
         ],
       ),
     );

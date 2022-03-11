@@ -33,7 +33,7 @@ class _DashatarStartSection extends State<DashatarStartSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const ResponsiveGap(
-          small: 20,
+          small: 0,
           medium: 83,
           large: 151,
         ),
@@ -48,7 +48,7 @@ class _DashatarStartSection extends State<DashatarStartSection> {
           // color: (theme.isPathTheme) ? PuzzleColors.pathPrimary : null,
         ),
         const ResponsiveGap(
-          small: 12,
+          small: 5,
           medium: 16,
           large: 32,
         ),

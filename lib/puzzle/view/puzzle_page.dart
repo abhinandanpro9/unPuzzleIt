@@ -29,6 +29,7 @@ import 'package:unpuzzle_it_abhi/flames/flames.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
+import 'package:unpuzzle_it_abhi/main.dart';
 import 'package:unpuzzle_it_abhi/models/models.dart';
 import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
@@ -45,7 +46,9 @@ import 'package:unpuzzle_it_abhi/typography/typography.dart';
 /// {@endtemplate}
 class PuzzlePage extends StatelessWidget {
   /// {@macro puzzle_page}
-  const PuzzlePage({Key? key}) : super(key: key);
+  const PuzzlePage(this.themeIndex, {Key? key}) : super(key: key);
+
+  final int themeIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +96,8 @@ class PuzzlePage extends StatelessWidget {
         GameWidget(
           game: ParallaxBackground(),
         ),
-        PuzzleView(),
+        PuzzleView(themeIndex),
+        // SplashScreen(),
         // Container(
         //   width: 100,
         //   height: 100,
@@ -111,7 +115,9 @@ class PuzzlePage extends StatelessWidget {
 /// {@endtemplate}
 class PuzzleView extends StatefulWidget {
   /// {@macro puzzle_view}
-  PuzzleView({Key? key}) : super(key: key);
+  PuzzleView(this.themeIndex, {Key? key}) : super(key: key);
+
+  final int themeIndex;
 
   final Rainbow blueRainbow =
       Rainbow(rangeStart: 0.0, rangeEnd: 10.0, spectrum: [
@@ -134,6 +140,7 @@ class _PuzzleView extends State<PuzzleView>
   late Animation<double> _blueAnim;
   async.Timer? _startPuzzleTimer;
   bool isStartCalled = false;
+  final Widget splash = const SplashScreen();
 
   // animate a double from 0 to 10
   Animatable<double> blueBgValue = Tween<double>(begin: 0.0, end: 10.0);
@@ -142,20 +149,29 @@ class _PuzzleView extends State<PuzzleView>
   void initState() {
     // create:
     if (!isStartCalled) {
-      _startPuzzleTimer =
-          async.Timer(const Duration(milliseconds: 100), () async {
-        await showAppDialogCustomSplash<void>(
-          context: context,
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider.value(
-                value: context.read<DashatarThemeBloc>(),
-              ),
-            ],
-            child: const SplashScreen(),
-          ),
-        );
-      });
+      // async.Timer(
+      //     Duration(seconds: 5),
+      //     () => Navigator.pushReplacement(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (context) => Scaffold(
+      //                   body: widget.splashScreen,
+      //                 ))));
+
+      // _startPuzzleTimer =
+      //     async.Timer(const Duration(milliseconds: 100), () async {
+      //   await showAppDialogCustomSplash<void>(
+      //     context: context,
+      //     child: MultiBlocProvider(
+      //       providers: [
+      //         BlocProvider.value(
+      //           value: context.read<DashatarThemeBloc>(),
+      //         ),
+      //       ],
+      //       child: splash,
+      //     ),
+      //   );
+      // });
 
       isStartCalled = true;
     }
@@ -169,6 +185,16 @@ class _PuzzleView extends State<PuzzleView>
       ..repeat();
     setState(() {
       _blueAnim = blueBgValue.animate(_blueController);
+    });
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      context
+          .read<DashatarThemeBloc>()
+          .add(DashatarThemeChanged(themeIndex: widget.themeIndex));
+      // async.Timer(
+      //     Duration(seconds: 5),
+      //     () => Navigator.pop(
+      //         context));
     });
   }
 
@@ -758,7 +784,7 @@ class _PuzzleBoard extends State<PuzzleBoard> {
   Future<void> _parseFile(double size, bool customPuzzleChange) async {
     if (filePath == null) return;
 
-     ParseFileClass parseWid =
+    ParseFileClass parseWid =
         await AllUtils.parseFile(size, filePath, context, _offset, _globalKey);
 
     _paintWidget = parseWid.getWiget();

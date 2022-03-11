@@ -30,7 +30,8 @@ dependencies:
   url_launcher: ^6.0.17
   image: ^3.1.1 # MIT Style License: https://pub.dev/packages/image/license
   rainbow_color: ^2.0.1 # MIT Style License: https://pub.dev/packages/rainbow_color/license
-
+  lottie: ^1.2.2 # MIT Style License
+  animated_splash_screen: ^1.2.0
 flutter:
   generate: true
   uses-material-design: true

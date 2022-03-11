@@ -1,10 +1,11 @@
-import 'dart:async';
+import 'dart:async' as async;
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unpuzzle_it_abhi/app/app.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
@@ -12,6 +13,7 @@ import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
 import 'package:unpuzzle_it_abhi/typography/typography.dart';
+import 'package:lottie/lottie.dart';
 
 /// {@template splash}
 /// Displays a splash screen as a menu
@@ -21,10 +23,14 @@ class SplashScreen extends StatefulWidget {
   const SplashScreen({
     Key? key,
     AudioPlayerFactory? audioPlayer,
+    this.callback,
   })  : _audioPlayerFactory = audioPlayer ?? getAudioPlayer,
         super(key: key);
 
   final AudioPlayerFactory _audioPlayerFactory;
+
+  /// Called when this button is tapped.
+  final Function(int)? callback;
 
   @override
   State<SplashScreen> createState() => _SplashScreen();
@@ -43,12 +49,12 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
     try {
       helpSplash = prefs.getBool('helpSplash');
     } on Exception catch (ex) {
-      log("Hello "+ex.toString());
+      log("Hello " + ex.toString());
     }
 
-    if ((helpSplash==null || helpSplash==false)) {
+    if ((helpSplash == null || helpSplash == false)) {
       // Call help ssection
-      Timer(const Duration(milliseconds: 200), () async {
+      async.Timer(const Duration(milliseconds: 200), () async {
         await showAppDialogCustom<void>(
           barrierDismissible: true,
           context: context,
@@ -74,22 +80,26 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+      Future.delayed(
+        const Duration(milliseconds: 200),
+        _controller.forward,
+      );
+    });
 
     //Call Help section
     help();
 
     _successAudioPlayer = widget._audioPlayerFactory();
 
+    _successAudioPlayer.stop();
+
     _successAudioPlayer.setAsset('assets/audio/spinwheel_success.mp3');
 
     _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1100),
-    );
-    Future.delayed(
-      const Duration(milliseconds: 140),
-      _controller.forward,
-    );
+        vsync: this,
+        duration: const Duration(milliseconds: 3000),
+        upperBound: 0.5);
   }
 
   @override
@@ -100,9 +110,24 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void splashExit(BuildContext context) {
-    Timer(const Duration(milliseconds: 500), () async {
-      Navigator.of(context).pop();
+  void splashExit(BuildContext context, {required int themeIndex}) {
+    // widget.callback!(themeIndex);
+    final mainGameApp = App(themeIndex);
+    final mainLoading = Loading(
+        lottie: 'assets/images/splash/loading_custom.json',
+        lottieDuration: 1000,
+        backColor: Color.fromARGB(255, 0, 25, 63));
+
+    async.Timer(const Duration(milliseconds: 1000), () async {
+      // Navigator.of(context).pop();
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => mainGameApp));
+
+      showAppDialogCustomSplash<void>(
+        context: context,
+        barrierDismissible: false,
+        child: mainLoading,
+      );
     });
   }
 
@@ -143,10 +168,12 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                 ? 150.0
                                 : 100.0);
 
-                        return Image(
-                            height: widthImage,
-                            image: new AssetImage(
-                                "assets/images/splash/hello.gif"));
+                        return Lottie.asset('assets/images/splash/hello.json',
+                            controller: _controller, height: widthImage);
+                        // Image(
+                        //     height: widthImage,
+                        //     image: new AssetImage(
+                        //         "assets/images/splash/hello.gif"));
                       },
                     ),
 
@@ -216,12 +243,14 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                   verticalOffset: 40,
                                   child: IconButton(
                                       onPressed: () {
-                                        unawaited(_successAudioPlayer.play());
-                                        // Path Theme
-                                        context.read<DashatarThemeBloc>().add(
-                                            DashatarThemeChanged(
-                                                themeIndex: 1));
-                                        splashExit(context);
+                                        async.unawaited(
+                                            _successAudioPlayer.play());
+
+                                        // // Path Theme
+                                        // context.read<DashatarThemeBloc>().add(
+                                        //     DashatarThemeChanged(
+                                        //         themeIndex: 1));
+                                        splashExit(context, themeIndex: 1);
                                       },
                                       iconSize: widthImage,
                                       icon: Image(
@@ -233,12 +262,13 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                   verticalOffset: 40,
                                   child: IconButton(
                                       onPressed: () {
-                                        unawaited(_successAudioPlayer.play());
-                                        // Custom Theme
-                                        context.read<DashatarThemeBloc>().add(
-                                            DashatarThemeChanged(
-                                                themeIndex: 2));
-                                        splashExit(context);
+                                        async.unawaited(
+                                            _successAudioPlayer.play());
+                                        // // Custom Theme
+                                        // context.read<DashatarThemeBloc>().add(
+                                        //     DashatarThemeChanged(
+                                        //         themeIndex: 2));
+                                        splashExit(context, themeIndex: 2);
                                       },
                                       iconSize: widthImage,
                                       icon: Image(
@@ -250,12 +280,13 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                                   verticalOffset: 40,
                                   child: IconButton(
                                       onPressed: () {
-                                        unawaited(_successAudioPlayer.play());
-                                        // Simple Theme
-                                        context.read<DashatarThemeBloc>().add(
-                                            DashatarThemeChanged(
-                                                themeIndex: 0));
-                                        splashExit(context);
+                                        async.unawaited(
+                                            _successAudioPlayer.play());
+                                        // // Simple Theme
+                                        // context.read<DashatarThemeBloc>().add(
+                                        //     DashatarThemeChanged(
+                                        //         themeIndex: 0));
+                                        splashExit(context, themeIndex: 0);
                                       },
                                       iconSize: widthImage,
                                       icon: Image(
@@ -303,22 +334,22 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                           callback: (selected) {
                             if (selected.contains('Simple')) {
                               // Simple Theme
-                              context
-                                  .read<DashatarThemeBloc>()
-                                  .add(DashatarThemeChanged(themeIndex: 0));
-                              splashExit(context);
+                              // context
+                              //     .read<DashatarThemeBloc>()
+                              //     .add(DashatarThemeChanged(themeIndex: 0));
+                              splashExit(context, themeIndex: 0);
                             } else if (selected.contains('Custom')) {
                               // Custom Theme
-                              context
-                                  .read<DashatarThemeBloc>()
-                                  .add(DashatarThemeChanged(themeIndex: 2));
-                              splashExit(context);
+                              // context
+                              //     .read<DashatarThemeBloc>()
+                              //     .add(DashatarThemeChanged(themeIndex: 2));
+                              splashExit(context, themeIndex: 2);
                             } else if (selected.contains('Path')) {
-                              // Path Theme
-                              context
-                                  .read<DashatarThemeBloc>()
-                                  .add(DashatarThemeChanged(themeIndex: 1));
-                              splashExit(context);
+                              // // Path Theme
+                              // context
+                              //     .read<DashatarThemeBloc>()
+                              //     .add(DashatarThemeChanged(themeIndex: 1));
+                              splashExit(context, themeIndex: 1);
                             }
                           },
                         );
