@@ -7,11 +7,11 @@
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:unpuzzle_it_abhi/bootstrap.dart';
-import 'package:unpuzzle_it_abhi/colors/colors.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/helpers/platform_helper.dart';
 
@@ -35,6 +35,7 @@ class SplashMain extends StatefulWidget {
 class _SplashScreen extends State<SplashMain> {
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     super.initState();
   }
 
@@ -56,7 +57,19 @@ class _SplashScreen extends State<SplashMain> {
         home: AnimatedSplashScreen(
             duration: 1500,
             splash: Lottie.asset('assets/images/splash/loading.json'),
-            nextScreen: SplashScreen(),
+            nextScreen: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/wall.png"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                SplashScreen()
+              ],
+            ),
             splashTransition: SplashTransition.fadeTransition,
             pageTransitionType: PageTransitionType.fade,
             backgroundColor: Color.fromARGB(255, 24, 149, 207)));

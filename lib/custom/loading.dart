@@ -38,6 +38,12 @@ class Loading extends StatefulWidget {
 class _Loading extends State<Loading> with TickerProviderStateMixin {
   late final AnimationController _controller;
 
+  Future<void> exit() async {
+    Timer(const Duration(milliseconds: 2000), () async {
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,20 +53,17 @@ class _Loading extends State<Loading> with TickerProviderStateMixin {
         upperBound: 1)
       ..forward()
       ..repeat();
-
-    Timer(const Duration(milliseconds: 2000), () async {
-      Navigator.of(context).pop();
-    });
   }
 
   @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    exit();
     return Scaffold(
       backgroundColor: widget.backColor,
       body: Center(

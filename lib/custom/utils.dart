@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:image/image.dart' as image;
 import 'package:flutter/material.dart';
@@ -24,17 +25,143 @@ class ParseFileClass {
 
   ParseFileClass(this._paintWidget, this._imageMain);
 
-  getWiget(){
+  getWiget() {
     return this._paintWidget;
   }
 
-  getImage(){
+  getImage() {
     return this._imageMain;
   }
 }
 
 class AllUtils {
+  final List<String>? achieveItems = ['1st One', '', ''];
+
   static Image? _image;
+
+  getAchieveList() {
+    return achieveItems;
+  }
+
+  static Future<bool> onWillPop(BuildContext context) async {
+    // final dialogWidth =
+    //     currentSize == ResponsiveLayoutSize.large ? 740.0 : 700.0;
+    return (await showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => Dialog(
+                backgroundColor: Color.fromARGB(255, 214, 73, 73),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                child: SizedBox(
+                  width: 700.0,
+                  child: ResponsiveLayoutBuilder(
+                      small: (_, child) => child!,
+                      medium: (_, child) => child!,
+                      large: (_, child) => child!,
+                      child: (currentSize) {
+                        final padding = currentSize ==
+                                ResponsiveLayoutSize.large
+                            ? const EdgeInsets.fromLTRB(48, 53, 48, 53)
+                            : (currentSize == ResponsiveLayoutSize.medium
+                                ? const EdgeInsets.fromLTRB(48, 54, 48, 53)
+                                : const EdgeInsets.fromLTRB(20, 40, 20, 40));
+
+                        final textStyle = (currentSize ==
+                                    ResponsiveLayoutSize.large
+                                ? PuzzleTextStyle.headline2
+                                : (currentSize == ResponsiveLayoutSize.medium)
+                                    ? PuzzleTextStyle.headline3
+                                    : PuzzleTextStyle.headline3Soft)
+                            .copyWith(
+                                color: Colors.white,
+                                fontFamily: 'GoogleSans',
+                                fontStyle: FontStyle.normal);
+
+                        final textStylebtn = (currentSize ==
+                                    ResponsiveLayoutSize.large
+                                ? PuzzleTextStyle.headline3Soft
+                                : (currentSize == ResponsiveLayoutSize.medium)
+                                    ? PuzzleTextStyle.headline4Soft
+                                    : PuzzleTextStyle.headline4Soft)
+                            .copyWith(
+                                color: Colors.white,
+                                fontFamily: 'GoogleSans',
+                                fontStyle: FontStyle.normal);
+
+                        final btnStyle = ButtonStyle(
+                            padding: MaterialStateProperty.all(EdgeInsets.only(
+                                left: 20.0, right: 20.0, bottom: 10, top: 10)),
+                            textStyle: MaterialStateProperty.all(textStylebtn),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)))),
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                            shadowColor: MaterialStateProperty.all(
+                                Color.fromARGB(255, 88, 6, 0)));
+
+                        final btnStyleYes = btnStyle.copyWith(
+                          backgroundColor: MaterialStateProperty.all(
+                              Color.fromARGB(255, 155, 59, 59)),
+                        );
+
+                        final btnStyleNo = btnStyle.copyWith(
+                          backgroundColor: MaterialStateProperty.all(
+                              Color.fromARGB(255, 39, 161, 100)),
+                        );
+
+                        final textAlign = TextAlign.center;
+                        final double gap =
+                            currentSize == ResponsiveLayoutSize.large ? 25 : 20;
+
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: padding,
+                              child: AnimatedDefaultTextStyle(
+                                style: textStyle,
+                                duration:
+                                    PuzzleThemeAnimationDuration.textStyle,
+                                child: Center(
+                                  child: Text(
+                                    'This will destroy\nall your progress!',
+                                    textAlign: textAlign,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                TextButton(
+                                  style: btnStyleNo,
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: new Text('No'),
+                                ),
+                                Gap(gap),
+                                TextButton(
+                                  style: btnStyleYes,
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: new Text('Yes'),
+                                ),
+                              ],
+                            ),
+                            Gap(gap),
+                          ],
+                        );
+                      }),
+                )))) ??
+        false;
+  }
 
   static Future<void> audioInit(_audioPlayer) async {
     // await _audioPlayer.setAsset('assets/audio/back_medium.mp3');

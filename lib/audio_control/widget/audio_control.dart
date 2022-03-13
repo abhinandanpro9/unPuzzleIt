@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
@@ -9,7 +10,25 @@ import 'package:unpuzzle_it_abhi/theme/theme.dart';
 /// {@endtemplate}
 class AudioControl extends StatelessWidget {
   /// {@macro audio_control}
-  const AudioControl({Key? key}) : super(key: key);
+  AudioControl({Key? key}) : super(key: key);
+
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  Future<void> audioGlobal(BuildContext context) async {
+    // Obtain shared preferences.
+    final SharedPreferences prefs = await _prefs;
+    bool? audioControl = false;
+    try {
+      audioControl = prefs.getBool('audioControl');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+
+    audioControl == null ? audioControl = true : audioControl = !audioControl;
+    await prefs.setBool('audioControl', audioControl);
+
+    context.read<AudioControlBloc>().add(AudioToggled());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +41,7 @@ class AudioControl extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => context.read<AudioControlBloc>().add(AudioToggled()),
+        onTap: () => audioGlobal(context),
         child: AnimatedSwitcher(
           duration: PuzzleThemeAnimationDuration.backgroundColorChange,
           child: ResponsiveLayoutBuilder(

@@ -11,12 +11,15 @@ import 'dart:async' as async;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
+import 'package:unpuzzle_it_abhi/colors/colors.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
-import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
+import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
+import 'package:unpuzzle_it_abhi/theme/theme.dart';
+import 'package:unpuzzle_it_abhi/typography/typography.dart';
 
 class App extends StatefulWidget {
   App(this.themeIndex,
@@ -212,16 +215,24 @@ class _AppState extends State<App> {
     });
   }
 
+  Future<bool> _onWillPop() async {
+    return AllUtils.onWillPop(context);
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          PuzzlePage(widget.themeIndex),
-          // SplashScreen(
-          //   callback: splashCallback,
-          // )
-        ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            PuzzlePage(widget.themeIndex),
+            // SplashScreen(
+            //   callback: splashCallback,
+            // )
+          ],
+        ),
       ),
     );
   }

@@ -61,6 +61,7 @@ class _DashatarStartSection extends State<DashatarStartSection> {
               : (widget.state.puzzle.tiles.length == 0)
                   ? widget.state.puzzle.tiles.length
                   : widget.state.puzzle.tiles.length - 1,
+          playerScore: widget.state.playerScore,
         ),
         const ResponsiveGap(
           small: 8,

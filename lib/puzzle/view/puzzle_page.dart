@@ -2,7 +2,6 @@
 
 import 'dart:async' as async;
 import 'dart:developer' as dev;
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
@@ -11,14 +10,13 @@ import 'package:confetti/confetti.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:image/image.dart' as image;
 import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rainbow_color/rainbow_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
@@ -29,7 +27,6 @@ import 'package:unpuzzle_it_abhi/flames/flames.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
-import 'package:unpuzzle_it_abhi/main.dart';
 import 'package:unpuzzle_it_abhi/models/models.dart';
 import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
@@ -141,9 +138,27 @@ class _PuzzleView extends State<PuzzleView>
   async.Timer? _startPuzzleTimer;
   bool isStartCalled = false;
   final Widget splash = const SplashScreen();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   // animate a double from 0 to 10
   Animatable<double> blueBgValue = Tween<double>(begin: 0.0, end: 10.0);
+
+  Future<void> audioGlobal() async {
+    // Obtain shared preferences.
+    final SharedPreferences prefs = await _prefs;
+    bool? audioControl = false;
+    try {
+      audioControl = prefs.getBool('audioControl');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+    audioControl == null ? audioControl = true : null;
+    await prefs.setBool('audioControl', audioControl);
+
+    if (audioControl != null && !audioControl) {
+      context.read<AudioControlBloc>().add(AudioToggled());
+    }
+  }
 
   @override
   void initState() {
@@ -191,6 +206,8 @@ class _PuzzleView extends State<PuzzleView>
       context
           .read<DashatarThemeBloc>()
           .add(DashatarThemeChanged(themeIndex: widget.themeIndex));
+      audioGlobal();
+
       // async.Timer(
       //     Duration(seconds: 5),
       //     () => Navigator.pop(
@@ -205,51 +222,52 @@ class _PuzzleView extends State<PuzzleView>
     super.dispose();
   }
 
-  // Widget builder for simple, path and custom themes
-  Widget puzzleViewChooser(PuzzleTheme theme, Widget _blocListener) {
-    // custom theme build
-    if (theme.isCustomTheme) {
-      return AnimatedContainer(
-          duration: PuzzleThemeAnimationDuration.backgroundColorChange,
-          decoration: BoxDecoration(color: theme.backgroundColor),
-          child: AnimatedBuilder(
-              animation: _blueController,
-              builder: (context, child) {
-                return Container(
-                  child: new Stack(
-                    children: <Widget>[
-                      _blocListener,
-                    ],
-                  ),
-                );
-              }));
-    } else if (theme.isPathTheme) {
-      return AnimatedContainer(
-          duration: PuzzleThemeAnimationDuration.backgroundColorChange,
-          decoration: BoxDecoration(color: Colors.transparent),
-          child: _blocListener); // path theme build
-    } else {
-      return AnimatedContainer(
-        duration: PuzzleThemeAnimationDuration.backgroundColorChange,
-        decoration: BoxDecoration(color: theme.backgroundColor),
-        child: AnimatedBuilder(
-            animation: _blueController,
-            builder: (context, child) {
-              return Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                        widget.blueRainbow[_blueAnim.value],
-                        widget.blueRainbow[(50.0 + _blueAnim.value) %
-                            widget.blueRainbow.rangeEnd]
-                      ])),
-                  child: _blocListener);
-            }),
-      ); // simple theme
-    }
-  }
+  // // Widget builder for simple, path and custom themes
+  // Widget puzzleViewChooser(PuzzleTheme theme, Widget _blocListener) {
+  //   // custom theme build
+  //   if (theme.isCustomTheme) {
+  //     return AnimatedContainer(
+  //         duration: PuzzleThemeAnimationDuration.backgroundColorChange,
+  //         decoration: BoxDecoration(color: theme.backgroundColor),
+  //         child: AnimatedBuilder(
+  //             animation: _blueController,
+  //             builder: (context, child) {
+  //               return Container(
+  //                 child: new Stack(
+  //                   children: <Widget>[
+  //                     Lottie.asset('assets/images/splash/loading.json'),
+  //                     _blocListener,
+  //                   ],
+  //                 ),
+  //               );
+  //             }));
+  //   } else if (theme.isPathTheme) {
+  //     return AnimatedContainer(
+  //         duration: PuzzleThemeAnimationDuration.backgroundColorChange,
+  //         decoration: BoxDecoration(color: Colors.transparent),
+  //         child: _blocListener); // path theme build
+  //   } else {
+  //     return AnimatedContainer(
+  //       duration: PuzzleThemeAnimationDuration.backgroundColorChange,
+  //       decoration: BoxDecoration(color: theme.backgroundColor),
+  //       child: AnimatedBuilder(
+  //           animation: _blueController,
+  //           builder: (context, child) {
+  //             return Container(
+  //                 decoration: BoxDecoration(
+  //                     gradient: LinearGradient(
+  //                         begin: Alignment.topLeft,
+  //                         end: Alignment.bottomRight,
+  //                         colors: [
+  //                       widget.blueRainbow[_blueAnim.value],
+  //                       widget.blueRainbow[(50.0 + _blueAnim.value) %
+  //                           widget.blueRainbow.rangeEnd]
+  //                     ])),
+  //                 child: _blocListener);
+  //           }),
+  //     ); // simple theme
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -274,7 +292,15 @@ class _PuzzleView extends State<PuzzleView>
                   decoration: (theme.isPathTheme)
                       ? BoxDecoration(color: Colors.transparent)
                       : (!theme.isCustomTheme)
-                          ? BoxDecoration(color: theme.backgroundColor)
+                          ? BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                  widget.blueRainbow[_blueAnim.value],
+                                  widget.blueRainbow[(50.0 + _blueAnim.value) %
+                                      widget.blueRainbow.rangeEnd]
+                                ]))
                           : BoxDecoration(
                               gradient: LinearGradient(
                                   begin: Alignment.topLeft,
@@ -286,6 +312,11 @@ class _PuzzleView extends State<PuzzleView>
                                 ])),
                   child: new Stack(
                     children: <Widget>[
+                      theme.isCustomTheme
+                          ? Center(
+                              child: Lottie.asset(
+                                  'assets/images/splash/custom.json'))
+                          : SizedBox(),
                       BlocListener<DashatarThemeBloc, DashatarThemeState>(
                         listener: (context, state) {
                           final dashatarTheme =
@@ -424,6 +455,13 @@ class PuzzleHeader extends StatelessWidget {
       child: ResponsiveLayoutBuilder(
         small: (context, child) => Stack(
           children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 34 * 2),
+                child: BackControl(callback: null),
+              ),
+            ),
             const Align(
               child: PuzzleLogo(),
             ),
@@ -502,7 +540,7 @@ class _PuzzleLogo extends State<PuzzleLogo> {
       dev.log(ex.toString());
     }
     if ((helpSplash == null || helpSplash == false)) {
-      async.Timer(const Duration(milliseconds: 500), () async {
+      async.Timer(const Duration(milliseconds: 2000), () async {
         await showAppDialogCustom<void>(
           barrierDismissible: true,
           context: context,
@@ -537,10 +575,42 @@ class _PuzzleLogo extends State<PuzzleLogo> {
       callHelp(context.l10n.pathHelp, Colors.orangeAccent);
     }
 
-    return AppFlutterLogo(
-      key: puzzleLogoKey,
-      isColored: theme.isLogoColored,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ResponsiveLayoutBuilder(
+          small: (_, child) => const SizedBox(),
+          medium: (_, child) => child!,
+          large: (_, child) => child!,
+          child: (currentSize) {
+            return Row(
+              children: [
+                const Gap(44),
+                BackControl(callback: null),
+                const Gap(24),
+                AppFlutterLogo(
+                  key: puzzleLogoKey,
+                  isColored: theme.isLogoColored,
+                ),
+              ],
+            );
+          },
+        ),
+      ],
     );
+
+    // Row(
+    //   children: [
+    //     AppFlutterLogo(
+    //       key: puzzleLogoKey,
+    //       isColored: theme.isLogoColored,
+    //     ),
+    //     HelpInfo(
+    //       text: 'hello',
+    //       duration: 3000,
+    //     )
+    //   ],
+    // );
   }
 }
 
@@ -1088,7 +1158,7 @@ class PuzzleMenuItem extends StatelessWidget {
 /// The global key of [PuzzleLogo].
 ///
 /// Used to animate the transition of [PuzzleLogo] when changing a theme.
-final puzzleLogoKey = GlobalKey(debugLabel: 'puzzle_logo');
+final puzzleLogoKey = GlobalKey(debugLabel: 'puzzle_logomain');
 
 /// The global key of [PuzzleName].
 ///
@@ -1106,6 +1176,8 @@ final puzzleTitleKey = GlobalKey(debugLabel: 'puzzle_title');
 /// when changing a theme.
 final numberOfMovesAndTilesLeftKey =
     GlobalKey(debugLabel: 'number_of_moves_and_tiles_left');
+
+final player_score = GlobalKey(debugLabel: 'player_score');
 
 /// The global key of [AudioControl].
 ///

@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/flames/flames.dart';
@@ -59,6 +61,10 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
   late AnimationController _controller;
   late Animation<double> _scale;
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  int? highscore = 0;
+  int? xp = 0;
+
   @override
   void initState() {
     super.initState();
@@ -90,6 +96,26 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
     super.dispose();
   }
 
+  Future<void> scoringUpdate(int spriteTile) async {
+    // Obtain shared preferences.
+    final SharedPreferences prefs = await _prefs;
+    try {
+      highscore = prefs.getInt('highscore');
+      xp = prefs.getInt('xp');
+    } on Exception catch (ex) {
+      log("Scoring " + ex.toString());
+    }
+
+    if ((highscore == null)) {
+      await prefs.setInt('highscore', 0);
+      highscore = 0;
+    }
+    if ((xp == null)) {
+      await prefs.setInt('xp', 0);
+      xp = 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = widget.state.puzzle.getDimension();
@@ -110,7 +136,10 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
 
     final canPress = hasStarted && puzzleIncomplete;
 
-    final spriteTile = puzzleIncomplete ? puzzle.getCorrectSeq(theme.pathMap) : 1;
+    final spriteTile =
+        puzzleIncomplete ? puzzle.getCorrectSeq(theme.pathMap) : 1;
+
+    scoringUpdate(spriteTile);
 
     return Stack(
       children: [

@@ -16,11 +16,13 @@ class HelpInfo extends StatefulWidget {
     required this.text,
     required this.duration,
     this.color = Colors.white,
+    this.dismisable = false,
   }) : super(key: key);
 
   final String text;
   final int duration;
   final Color color;
+  final bool dismisable;
 
   @override
   State<HelpInfo> createState() => _SplashScreenInfo();
@@ -38,13 +40,15 @@ class _SplashScreenInfo extends State<HelpInfo> with TickerProviderStateMixin {
   }
 
   void exitHelp(BuildContext context) {
-    Timer(const Duration(milliseconds: 2000), () async {
-      try {
-        Navigator.of(context).pop();
-      } on Exception catch (ex) {
-        log(ex.toString());
-      }
-    });
+    if (!widget.dismisable) {
+      Timer(const Duration(milliseconds: 2000), () async {
+        try {
+          Navigator.of(context).pop();
+        } on Exception catch (ex) {
+          log(ex.toString());
+        }
+      });
+    }
   }
 
   @override

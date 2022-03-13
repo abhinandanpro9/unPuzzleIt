@@ -161,6 +161,18 @@ class DashatarScore extends StatelessWidget {
                           ),
                         ),
                       ),
+                      AnimatedDefaultTextStyle(
+                        key: const Key('dashatar_score_player_score'),
+                        style: numberOfMovesTextStyle.copyWith(
+                          color: PuzzleColors.white,
+                        ),
+                        duration: PuzzleThemeAnimationDuration.textStyle,
+                        child: Text(
+                          l10n.dashatarSuccessPlayerScore(
+                            state.playerScore.toString(),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

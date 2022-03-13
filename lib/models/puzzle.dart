@@ -83,6 +83,7 @@ class Puzzle extends Equatable {
       }
     }
 
+    // Default is always 1
     return (index - 1) == 0 ? 1 : index - 1;
   }
 

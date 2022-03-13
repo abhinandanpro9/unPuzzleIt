@@ -113,6 +113,9 @@ class RouletteScore extends StatefulWidget {
 
 class _RouletteScore extends State<RouletteScore> {
   bool isCalled = false;
+  late Timer cb_timer=Timer(const Duration(milliseconds: 1000), () async {
+        widget.callback!(labels[widget.selected]!);
+      });
 
   final Map<int, String> labels = {
     1: 'Simple Game',
@@ -130,7 +133,10 @@ class _RouletteScore extends State<RouletteScore> {
     if (!isCalled) {
       isCalled = true;
     } else {
-      widget.callback!(labels[widget.selected]!);
+      cb_timer.cancel();
+      cb_timer = Timer(const Duration(milliseconds: 500), () async {
+        widget.callback!(labels[widget.selected]!);
+      });
     }
 
     return Text('${labels[widget.selected]}',

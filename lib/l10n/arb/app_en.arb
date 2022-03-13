@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "mainTitle": "How are you?",
+    "mainTitle": "How are you today!?",
     "@mainTitle": {
         "description": "Shown as a Title during start"
     },
@@ -68,6 +68,10 @@
     "@puzzleNumberOfTilesLeft": {
         "description": "Indicates how many puzzle tiles are not in their correct position"
     },
+    "playerScore": "Score",
+    "@playerScore": {
+        "description": "Indicates the player score"
+    },
     "puzzleShuffle": "Start Game",
     "@puzzleShuffle": {
         "description": "Shown on the button that shuffle the puzzle"
@@ -108,6 +112,16 @@
     "@dashatarSuccessScore": {
         "description": "Shown as a score title in the Dashatar success state"
     },
+    "dashatarSuccessPlayerScore": "{playerScore} Final Score",
+    "@dashatarSuccessPlayerScore": {
+        "description": "Shown as a player score",
+        "placeholders": {
+            "playerScore": {
+                "type": "String",
+                "example": "5"
+            }
+        }
+    },
     "dashatarSuccessNumberOfMoves": "{numberOfMoves} Moves",
     "@dashatarSuccessNumberOfMoves": {
         "description": "Shown as a number of moves in the Dashatar success state",
@@ -136,7 +150,7 @@
             }
         }
     },
-    "puzzleNumberOfMovesAndTilesLeftLabelText": "Moves: {numberOfMoves}, tiles: {tilesLeft}",
+    "puzzleNumberOfMovesAndTilesLeftLabelText": "Moves: {numberOfMoves}, tiles: {tilesLeft}, score: {score}",
     "@puzzleNumberOfMovesAndTilesLeftLabelText": {
         "description": "Semantic label for the puzzle tile",
         "placeholders": {
@@ -145,6 +159,10 @@
                 "example": "30"
             },
             "tilesLeft": {
+                "type": "String",
+                "example": "10"
+            },
+            "score": {
                 "type": "String",
                 "example": "10"
             }

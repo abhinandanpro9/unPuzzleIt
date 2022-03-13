@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
+import 'dart:async' as async;
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
+class AchieveWidget extends StatefulWidget {
+  const AchieveWidget({Key? key}) : super(key: key);
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<AchieveWidget> createState() => _AchieveWidgetState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget>
+class _AchieveWidgetState extends State<AchieveWidget>
     with SingleTickerProviderStateMixin {
+  // Animation Controller
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 2),
     vsync: this,
-  )..repeat(reverse: true);
+  );
   late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
+    begin: const Offset(1.5, 0.0),
+    end: Offset.zero,
   ).animate(CurvedAnimation(
     parent: _controller,
-    curve: Curves.elasticIn,
+    curve: Curves.elasticInOut,
   ));
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _controller.reverse();
+      }
+    });
+    _controller.forward();
+  }
 
   @override
   void dispose() {
@@ -29,11 +43,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget>
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _offsetAnimation,
-      child: const Padding(
-        padding: EdgeInsets.all(8.0),
-        child: FlutterLogo(size: 150.0),
+    return Center(
+      child: SlideTransition(
+        position: _offsetAnimation,
+        child: Container(
+          width: double.infinity,
+          child: FlutterLogo(size: 150.0),
+        ),
       ),
     );
   }
