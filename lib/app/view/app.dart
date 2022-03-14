@@ -11,15 +11,10 @@ import 'dart:async' as async;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
-import 'package:unpuzzle_it_abhi/colors/colors.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
-import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/puzzle/puzzle.dart';
-import 'package:unpuzzle_it_abhi/theme/theme.dart';
-import 'package:unpuzzle_it_abhi/typography/typography.dart';
 
 class App extends StatefulWidget {
   App(this.themeIndex,
@@ -84,6 +79,10 @@ class _AppState extends State<App> {
         );
         precacheImage(
           Image.asset('assets/images/help.png').image,
+          context,
+        );
+        precacheImage(
+          Image.asset('assets/images/badge.png').image,
           context,
         );
         precacheImage(
@@ -218,7 +217,6 @@ class _AppState extends State<App> {
   Future<bool> _onWillPop() async {
     return AllUtils.onWillPop(context);
   }
-
 
   @override
   Widget build(BuildContext context) {

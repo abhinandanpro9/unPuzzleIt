@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unpuzzle_it_abhi/custom/custom.dart';
+import 'package:unpuzzle_it_abhi/custom/utils.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
@@ -35,20 +36,16 @@ class NumberOfMovesAndTilesLeft extends StatelessWidget {
   /// Defaults to [PuzzleTheme.defaultColor].
   final Color? color;
 
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
   Future<void> scoringUpdate() async {
     int? highscore = 0;
-    // Obtain shared preferences.
-    final SharedPreferences prefs = await _prefs;
     try {
-      highscore = prefs.getInt('highscore');
+      highscore = SettingsUtils.getHighscore();
     } on Exception catch (ex) {
       log("Scoring Moves " + ex.toString());
     }
 
     if (highscore != null && (highscore < playerScore)) {
-      await prefs.setInt('highscore', playerScore);
+      SettingsUtils.setHighscore(playerScore);
     }
     // if ((xp == null)) {
     //   await prefs.setInt('xp', 0);

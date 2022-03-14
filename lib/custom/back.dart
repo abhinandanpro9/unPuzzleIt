@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
-import 'package:unpuzzle_it_abhi/typography/typography.dart';
 
 /// {@template audio_control}
 /// Displays and allows to update the current audio status of the puzzle.
@@ -21,10 +19,10 @@ class BackControl extends StatefulWidget {
 }
 
 class _BackControl extends State<BackControl> {
-
-
   Future<void> call() async {
-    await AllUtils.onWillPop(context) ? Navigator.of(context).pop() : null;
+    if (await AllUtils.onWillPop(context)) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override

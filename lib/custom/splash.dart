@@ -3,14 +3,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/app/app.dart';
 import 'package:unpuzzle_it_abhi/custom/custom.dart';
-import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
 import 'package:unpuzzle_it_abhi/l10n/l10n.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
@@ -116,7 +114,6 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
     var refresh;
 
     async.Timer(const Duration(milliseconds: 1000), () async {
-
       refresh = Navigator.push(
           context, MaterialPageRoute(builder: (context) => mainGameApp));
 
@@ -129,36 +126,37 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
     });
   }
 
-  int? highscore;
-  int? xp;
+  int? highscore = 0;
+  int? xp = 0;
+  List<String>? achieve = [":"];
 
   Future<void> getHighscore() async {
-    // Obtain shared preferences.
-    final SharedPreferences prefs = await _prefs;
-    int? readHighscore;
-    int? readXp;
-    try {
-      readHighscore = prefs.getInt('highscore');
-      readXp = prefs.getInt('xp');
-    } on Exception catch (ex) {
-      log("Hello " + ex.toString());
-    }
+    SettingsUtils.settingInit();
 
-    if ((highscore == null)) {
-      await prefs.setInt('highscore', 0);
-      readHighscore = 0;
-    }
-    if ((xp == null)) {
-      await prefs.setInt('xp', 0);
-      readXp = 0;
-    }
+    async.Timer(const Duration(milliseconds: 100), () async {
+      int? readHighscore;
+      int? readXp;
+      List<String>? items;
 
-    if (readXp != xp || readHighscore != highscore || xp == null) {
-      setState(() {
-        highscore = readHighscore;
-        xp = readXp;
-      });
-    }
+      try {
+        readHighscore = SettingsUtils.getHighscore();
+        readXp = SettingsUtils.getXp();
+        items = SettingsUtils.getAchieve();
+      } on Exception catch (ex) {
+        // log("Hello " + ex.toString());
+      }
+
+      if (readXp != xp ||
+          readHighscore != highscore ||
+          achieve!.length != items!.length ||
+          xp == null) {
+        setState(() {
+          highscore = readHighscore;
+          xp = readXp;
+          achieve = items;
+        });
+      }
+    });
   }
 
   @override
@@ -188,14 +186,13 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
                       // CustomRoulette(),
                       rouletteSection(context, splashExit),
                       const ResponsiveGap(small: 23, medium: 0, large: 0),
-                      smallScoreBuilder(context, highscore, xp),
+                      smallScoreBuilder(context, highscore, xp, achieve),
                     ],
                   ));
             }),
           ),
-          AchieveWidget(),
           scoreBuilderBox(context, highscore, xp),
-          achieveBuilderBox(context),
+          achieveBuilderBox(context, achieve),
         ]),
       ),
     );
@@ -203,7 +200,8 @@ class _SplashScreen extends State<SplashScreen> with TickerProviderStateMixin {
 }
 
 @override
-Widget smallScoreBuilder(BuildContext context, int? highscore, int? xp) {
+Widget smallScoreBuilder(
+    BuildContext context, int? highscore, int? xp, List<String>? achieveItems) {
   return Column(
     children: [
       ResponsiveLayoutBuilder(
@@ -226,6 +224,19 @@ Widget smallScoreBuilder(BuildContext context, int? highscore, int? xp) {
             ),
             Shadow(
               offset: Offset(5.0, 5.0),
+              blurRadius: 8.0,
+              color: Color.fromARGB(125, 0, 0, 255),
+            ),
+          ]);
+          final textStyleScore = (PuzzleTextStyle.headline4Soft)
+              .copyWith(color: Colors.yellow, shadows: <Shadow>[
+            Shadow(
+              offset: Offset(3.0, 3.0),
+              blurRadius: 3.0,
+              color: Color.fromARGB(255, 0, 0, 0),
+            ),
+            Shadow(
+              offset: Offset(3.0, 3.0),
               blurRadius: 8.0,
               color: Color.fromARGB(125, 0, 0, 255),
             ),
@@ -278,7 +289,7 @@ Widget smallScoreBuilder(BuildContext context, int? highscore, int? xp) {
                       // const ResponsiveGap(small: 23, medium: 32, large: 50),
                       Gap(gap),
                       AnimatedDefaultTextStyle(
-                        style: textStyle,
+                        style: textStyleScore,
                         duration: Duration(seconds: 500),
                         child: Text(
                           highscore.toString(),
@@ -297,7 +308,7 @@ Widget smallScoreBuilder(BuildContext context, int? highscore, int? xp) {
                       // const ResponsiveGap(small: 23, medium: 32, large: 50),
                       Gap(gap),
                       AnimatedDefaultTextStyle(
-                        style: textStyle,
+                        style: textStyleScore,
                         duration: Duration(seconds: 500),
                         child: Text(
                           xp.toString(),
@@ -331,7 +342,7 @@ Widget smallScoreBuilder(BuildContext context, int? highscore, int? xp) {
                     .center, //Center Row contents horizontally,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Achievements(),
+                  Achievements(achieveItems),
                 ],
               ),
             ],
@@ -360,6 +371,21 @@ Widget scoreBuilderBox(BuildContext context, int? highscore, int? xp) {
                 ? headline2
                 : PuzzleTextStyle.headline4)
             .copyWith(color: Colors.white, shadows: <Shadow>[
+          Shadow(
+            offset: Offset(5.0, 5.0),
+            blurRadius: 3.0,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+          Shadow(
+            offset: Offset(5.0, 5.0),
+            blurRadius: 8.0,
+            color: Color.fromARGB(125, 0, 0, 255),
+          ),
+        ]);
+        final textStyleScore = (currentSize == ResponsiveLayoutSize.large
+                ? PuzzleTextStyle.headline3Soft
+                : PuzzleTextStyle.headline4Soft)
+            .copyWith(color: Colors.yellow, shadows: <Shadow>[
           Shadow(
             offset: Offset(5.0, 5.0),
             blurRadius: 3.0,
@@ -410,7 +436,7 @@ Widget scoreBuilderBox(BuildContext context, int? highscore, int? xp) {
                 // const ResponsiveGap(small: 23, medium: 32, large: 50),
                 Gap(gap),
                 AnimatedDefaultTextStyle(
-                  style: textStyle,
+                  style: textStyleScore,
                   duration: Duration(seconds: 500),
                   child: Text(
                     highscore.toString(),
@@ -429,7 +455,7 @@ Widget scoreBuilderBox(BuildContext context, int? highscore, int? xp) {
                 // const ResponsiveGap(small: 23, medium: 32, large: 50),
                 Gap(gap),
                 AnimatedDefaultTextStyle(
-                  style: textStyle,
+                  style: textStyleScore,
                   duration: Duration(seconds: 500),
                   child: Text(
                     xp.toString(),
@@ -444,7 +470,7 @@ Widget scoreBuilderBox(BuildContext context, int? highscore, int? xp) {
 }
 
 @override
-Widget achieveBuilderBox(BuildContext context) {
+Widget achieveBuilderBox(BuildContext context, List<String>? achieveItems) {
   return Positioned(
     bottom: 74,
     left: 25,
@@ -458,16 +484,46 @@ Widget achieveBuilderBox(BuildContext context) {
       ),
       child: (currentSize) {
         final textStyle = (currentSize == ResponsiveLayoutSize.large
-                ? headline2
+                ? PuzzleTextStyle.headline3
                 : PuzzleTextStyle.headline4)
             .copyWith(color: Colors.white, shadows: <Shadow>[
           Shadow(
-            offset: Offset(10.0, 10.0),
+            offset: Offset(7.0, 7.0),
             blurRadius: 3.0,
             color: Color.fromARGB(255, 0, 0, 0),
           ),
           Shadow(
-            offset: Offset(10.0, 10.0),
+            offset: Offset(7.0, 7.0),
+            blurRadius: 8.0,
+            color: Color.fromARGB(125, 0, 0, 255),
+          ),
+        ]);
+        final textStyleList = (currentSize == ResponsiveLayoutSize.large
+                ? PuzzleTextStyle.headline4Soft
+                : PuzzleTextStyle.headline4Soft)
+            .copyWith(color: Colors.white, shadows: <Shadow>[
+          Shadow(
+            offset: Offset(3.0, 3.0),
+            blurRadius: 3.0,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+          Shadow(
+            offset: Offset(3.0, 3.0),
+            blurRadius: 8.0,
+            color: Color.fromARGB(125, 0, 0, 255),
+          ),
+        ]);
+        final textStyleListRight = (currentSize == ResponsiveLayoutSize.large
+                ? PuzzleTextStyle.headline4Soft
+                : PuzzleTextStyle.headline4Soft)
+            .copyWith(color: Color.fromARGB(255, 68, 243, 255), shadows: <Shadow>[
+          Shadow(
+            offset: Offset(3.0, 3.0),
+            blurRadius: 3.0,
+            color: Color.fromARGB(255, 0, 0, 0),
+          ),
+          Shadow(
+            offset: Offset(3.0, 3.0),
             blurRadius: 8.0,
             color: Color.fromARGB(125, 0, 0, 255),
           ),
@@ -479,38 +535,68 @@ Widget achieveBuilderBox(BuildContext context) {
 
         final double pad = currentSize == ResponsiveLayoutSize.large ? 50 : 20;
         final double gap = currentSize == ResponsiveLayoutSize.large ? 25 : 20;
+        final double widthList = currentSize == ResponsiveLayoutSize.large ? 300 : 150;
+        final double heightList = currentSize == ResponsiveLayoutSize.large ? 200 : 150;
 
         return Container(
-            padding: EdgeInsets.all(pad),
-            decoration: BoxDecoration(
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    offset: Offset(5.0, 5.0),
-                    blurRadius: 3.0,
-                    color: Color.fromARGB(255, 0, 0, 0),
-                  ),
-                  BoxShadow(
-                    offset: Offset(5.0, 5.0),
-                    blurRadius: 8.0,
-                    spreadRadius: 5.0,
-                    color: Color.fromARGB(255, 122, 39, 0),
-                  ),
-                ],
-                color: Color.fromARGB(255, 207, 82, 24),
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            child: Column(
-              children: [
-                AnimatedDefaultTextStyle(
-                  style: textStyle,
-                  duration: Duration(seconds: 500),
-                  child: Text(
-                    'Achievements',
-                    textAlign: textAlign,
-                  ),
+          padding: EdgeInsets.all(pad),
+          decoration: BoxDecoration(
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  offset: Offset(5.0, 5.0),
+                  blurRadius: 3.0,
+                  color: Color.fromARGB(255, 0, 0, 0),
                 ),
-                Gap(gap),
+                BoxShadow(
+                  offset: Offset(5.0, 5.0),
+                  blurRadius: 8.0,
+                  spreadRadius: 5.0,
+                  color: Color.fromARGB(255, 122, 39, 0),
+                ),
               ],
-            ));
+              color: Color.fromARGB(255, 207, 82, 24),
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              AnimatedDefaultTextStyle(
+                style: textStyle,
+                duration: Duration(seconds: 500),
+                child: Text(
+                  'Achievements',
+                  textAlign: textAlign,
+                ),
+              ),
+              Gap(gap),
+              Container(
+                height: heightList,
+                width: widthList,
+                child: ListView.builder(
+                    itemCount: achieveItems!.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        trailing: AnimatedDefaultTextStyle(
+                          style: textStyleListRight,
+                          duration: Duration(milliseconds: 500),
+                          child: Text(
+                            achieveItems[index].split(':')[1],
+                            textAlign: textAlign,
+                          ),
+                        ),
+                        title: AnimatedDefaultTextStyle(
+                          style: textStyleList,
+                          duration: Duration(milliseconds: 500),
+                          child: Text(
+                            achieveItems[index].split(':')[0],
+                            textAlign: textAlign,
+                          ),
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          ),
+        );
       },
     ),
   );
@@ -927,6 +1013,11 @@ class _SplashAudioControl extends State<SplashAudioControl>
     if (audioControl == null) {
       audioControl = true;
     } else {
+      if (audioControl != null && !audioControl) {
+        setState(() {
+          audioAsset = "assets/images/audio_control/simple_off.png";
+        });
+      }
       return;
     }
     await prefs.setBool('audioControl', audioControl);

@@ -4,14 +4,12 @@ import 'dart:async' as async;
 import 'dart:developer' as dev;
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:confetti/confetti.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -138,24 +136,22 @@ class _PuzzleView extends State<PuzzleView>
   async.Timer? _startPuzzleTimer;
   bool isStartCalled = false;
   final Widget splash = const SplashScreen();
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   // animate a double from 0 to 10
   Animatable<double> blueBgValue = Tween<double>(begin: 0.0, end: 10.0);
 
   Future<void> audioGlobal() async {
     // Obtain shared preferences.
-    final SharedPreferences prefs = await _prefs;
     bool? audioControl = false;
     try {
-      audioControl = prefs.getBool('audioControl');
+      audioControl = SettingsUtils.getAudio();
     } on Exception catch (ex) {
       // log("Hello " + ex.toString());
     }
     audioControl == null ? audioControl = true : null;
-    await prefs.setBool('audioControl', audioControl);
+    SettingsUtils.setAudio(audioControl);
 
-    if (audioControl != null && !audioControl) {
+    if (!audioControl) {
       context.read<AudioControlBloc>().add(AudioToggled());
     }
   }
@@ -221,53 +217,6 @@ class _PuzzleView extends State<PuzzleView>
     _startPuzzleTimer!.cancel();
     super.dispose();
   }
-
-  // // Widget builder for simple, path and custom themes
-  // Widget puzzleViewChooser(PuzzleTheme theme, Widget _blocListener) {
-  //   // custom theme build
-  //   if (theme.isCustomTheme) {
-  //     return AnimatedContainer(
-  //         duration: PuzzleThemeAnimationDuration.backgroundColorChange,
-  //         decoration: BoxDecoration(color: theme.backgroundColor),
-  //         child: AnimatedBuilder(
-  //             animation: _blueController,
-  //             builder: (context, child) {
-  //               return Container(
-  //                 child: new Stack(
-  //                   children: <Widget>[
-  //                     Lottie.asset('assets/images/splash/loading.json'),
-  //                     _blocListener,
-  //                   ],
-  //                 ),
-  //               );
-  //             }));
-  //   } else if (theme.isPathTheme) {
-  //     return AnimatedContainer(
-  //         duration: PuzzleThemeAnimationDuration.backgroundColorChange,
-  //         decoration: BoxDecoration(color: Colors.transparent),
-  //         child: _blocListener); // path theme build
-  //   } else {
-  //     return AnimatedContainer(
-  //       duration: PuzzleThemeAnimationDuration.backgroundColorChange,
-  //       decoration: BoxDecoration(color: theme.backgroundColor),
-  //       child: AnimatedBuilder(
-  //           animation: _blueController,
-  //           builder: (context, child) {
-  //             return Container(
-  //                 decoration: BoxDecoration(
-  //                     gradient: LinearGradient(
-  //                         begin: Alignment.topLeft,
-  //                         end: Alignment.bottomRight,
-  //                         colors: [
-  //                       widget.blueRainbow[_blueAnim.value],
-  //                       widget.blueRainbow[(50.0 + _blueAnim.value) %
-  //                           widget.blueRainbow.rangeEnd]
-  //                     ])),
-  //                 child: _blocListener);
-  //           }),
-  //     ); // simple theme
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -638,6 +587,7 @@ Path drawStar(Size size) {
   final halfDegreesPerStep = degreesPerStep / 2;
   final path = Path();
   final fullAngle = degToRad(360);
+
   path.moveTo(size.width, halfWidth);
 
   for (double step = 0; step < fullAngle; step += degreesPerStep) {
@@ -670,6 +620,10 @@ class _PuzzleSections extends State<PuzzleSections> {
     ], // manually specify the colors to be used
     createParticlePath: drawStar, // define a custom shape/path.
   );
+  String? achieveStr = "";
+  bool movedProcess = false;
+  List<String>? items;
+  int? xp;
 
   @override
   void initState() {
@@ -683,16 +637,82 @@ class _PuzzleSections extends State<PuzzleSections> {
     super.dispose();
   }
 
-  // int playConfetti() {
-  //   _controllerCenter.play();
+  String completeAchieve(Puzzle puzzle) {
+    var achieveList = AchievementList().getString();
+    var achieveListXp = AchievementList().getAchieveXp();
 
-  //   return 100;
+    try {
+      items = SettingsUtils.getAchieve();
+      xp = SettingsUtils.getXp();
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+
+    if (!items!.contains(achieveList[2])) {
+      items!.add(achieveList[2]);
+      SettingsUtils.setAchieve(items!);
+      SettingsUtils.setXp(achieveListXp![2] + xp!);
+
+      return achieveList[2];
+    }
+
+    return "";
+  }
+
+  String getAchievements(Puzzle puzzle) {
+    var achieveList = AchievementList().getString();
+    var achieveListXp = AchievementList().getAchieveXp();
+
+    try {
+      items = SettingsUtils.getAchieve();
+      xp = SettingsUtils.getXp();
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+
+    if (puzzle.tiles[0].correctPosition == puzzle.tiles[0].currentPosition &&
+        !items!.contains(achieveList[0])) {
+      items!.add(achieveList[0]);
+      SettingsUtils.setAchieve(items!);
+      SettingsUtils.setXp(achieveListXp![0] + xp!);
+
+      return achieveList[0];
+    }
+
+    if (puzzle.tiles.length > 15 &&
+        puzzle.tiles[0].correctPosition == puzzle.tiles[0].currentPosition &&
+        puzzle.tiles[1].correctPosition == puzzle.tiles[1].currentPosition &&
+        puzzle.tiles[2].correctPosition == puzzle.tiles[2].currentPosition &&
+        puzzle.tiles[3].correctPosition == puzzle.tiles[3].currentPosition &&
+        !items!.contains(achieveList[1])) {
+      items!.add(achieveList[1]);
+      SettingsUtils.setAchieve(items!);
+      SettingsUtils.setXp(achieveListXp![1] + xp!);
+
+      return achieveList[1];
+    }
+
+    return "";
+  }
+
+  // async.Future<void> callAchieve(Puzzle puzzle) async {
+  //   var tempStr = await getAchievements(puzzle);
+
+  //   if (tempStr != "" && !movedProcess) {
+  //     async.Timer(const Duration(milliseconds: 1000), () async {
+  //       setState(() {
+  //         movedProcess = true;
+  //         achieveStr = tempStr;
+  //       });
+  //     });
+  //   }
   // }
 
   @override
   Widget build(BuildContext context) {
     final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
     final state = context.select((PuzzleBloc bloc) => bloc.state);
+    final puzzle = context.select((PuzzleBloc bloc) => bloc.state.puzzle);
     final numberOfilesLeft =
         state.puzzle.tiles.length - state.numberOfCorrectTiles - 1;
     final tileState = state.puzzleStatus.name;
@@ -702,46 +722,73 @@ class _PuzzleSections extends State<PuzzleSections> {
             tileState == PuzzleStatus.reversed.name ||
             tileState == PuzzleStatus.complete.name)) {
       _controllerCenter.play();
+      if (theme.isPathTheme) {
+        achieveStr = completeAchieve(
+          puzzle,
+        );
+      }
     } else {
       if (_controllerCenter.state == ConfettiControllerState.playing) {
         _controllerCenter.stop();
       }
     }
 
+    if (numberOfilesLeft != 0 &&
+        tileState != PuzzleStatus.complete.name &&
+        !movedProcess) {
+      achieveStr = getAchievements(
+        puzzle,
+      );
+    }
+    movedProcess = false;
+
     return ResponsiveLayoutBuilder(
-      small: (context, child) => Column(
+      small: (context, child) => Stack(
         children: [
-          _starBlast,
-          theme.layoutDelegate.startSectionBuilder(state),
-          const PuzzleMenu(),
-          const PuzzleBoard(),
-          theme.layoutDelegate.endSectionBuilder(state),
-          _starBlast,
-        ],
-      ),
-      medium: (context, child) => Column(
-        children: [
-          _starBlast,
-          theme.layoutDelegate.startSectionBuilder(state),
-          const PuzzleBoard(),
-          theme.layoutDelegate.endSectionBuilder(state),
-          _starBlast,
-        ],
-      ),
-      large: (context, child) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _starBlast,
-          Expanded(
-            child: theme.layoutDelegate.startSectionBuilder(state),
+          Column(
+            children: [
+              _starBlast,
+              theme.layoutDelegate.startSectionBuilder(state),
+              const PuzzleMenu(),
+              const PuzzleBoard(),
+              theme.layoutDelegate.endSectionBuilder(state),
+              _starBlast,
+            ],
           ),
-          const PuzzleBoard(),
-          Expanded(
-            child: theme.layoutDelegate.endSectionBuilder(state),
-          ),
-          _starBlast,
+          if (achieveStr != "") AchieveWidget(achieveStr!),
         ],
       ),
+      medium: (context, child) => Stack(
+        children: [
+          Column(
+            children: [
+              _starBlast,
+              theme.layoutDelegate.startSectionBuilder(state),
+              const PuzzleBoard(),
+              theme.layoutDelegate.endSectionBuilder(state),
+              _starBlast,
+            ],
+          ),
+          if (achieveStr != "") AchieveWidget(achieveStr!),
+        ],
+      ),
+      large: (context, child) => Stack(children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _starBlast,
+            Expanded(
+              child: theme.layoutDelegate.startSectionBuilder(state),
+            ),
+            const PuzzleBoard(),
+            Expanded(
+              child: theme.layoutDelegate.endSectionBuilder(state),
+            ),
+            _starBlast,
+          ],
+        ),
+        if (achieveStr != "") AchieveWidget(achieveStr!),
+      ]),
     );
   }
 }
@@ -1177,7 +1224,7 @@ final puzzleTitleKey = GlobalKey(debugLabel: 'puzzle_title');
 final numberOfMovesAndTilesLeftKey =
     GlobalKey(debugLabel: 'number_of_moves_and_tiles_left');
 
-final player_score = GlobalKey(debugLabel: 'player_score');
+final playerScore = GlobalKey(debugLabel: 'player_score');
 
 /// The global key of [AudioControl].
 ///

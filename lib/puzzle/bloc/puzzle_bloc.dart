@@ -92,24 +92,22 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
     if (puzzle.getNumberOfCorrectTiles() == (pow(tileSize, 2) - 1)) {
       emit(
         state.copyWith(
-          puzzle: puzzle.sort(),
-          puzzleStatus: PuzzleStatus.reversed,
-          tileMovementStatus: TileMovementStatus.moved,
-          numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
-          numberOfMoves: state.numberOfMoves,
-          playerScore: state.playerScore
-        ),
+            puzzle: puzzle.sort(),
+            puzzleStatus: PuzzleStatus.reversed,
+            tileMovementStatus: TileMovementStatus.moved,
+            numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
+            numberOfMoves: state.numberOfMoves,
+            playerScore: state.playerScore),
       );
     } else {
       emit(
         state.copyWith(
-          puzzle: puzzle.sort(),
-          puzzleStatus: PuzzleStatus.reversing,
-          tileMovementStatus: TileMovementStatus.moved,
-          numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
-          numberOfMoves: state.numberOfMoves,
-          playerScore: state.playerScore
-        ),
+            puzzle: puzzle.sort(),
+            puzzleStatus: PuzzleStatus.reversing,
+            tileMovementStatus: TileMovementStatus.moved,
+            numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
+            numberOfMoves: state.numberOfMoves,
+            playerScore: state.playerScore),
       );
     }
   }
@@ -259,26 +257,36 @@ class PuzzleBloc extends Bloc<PuzzleEvent, PuzzleState> {
           // When complete the puzzle
           emit(
             state.copyWith(
-              puzzle: puzzle.sort(),
-              puzzleStatus: PuzzleStatus.complete,
-              tileMovementStatus: TileMovementStatus.moved,
-              numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
-              numberOfMoves: state.numberOfMoves + 1,
-              lastTappedTile: tappedTile,
-              playerScore: state.playerScore
-            ),
+                puzzle: puzzle.sort(),
+                puzzleStatus: PuzzleStatus.complete,
+                tileMovementStatus: TileMovementStatus.moved,
+                numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
+                numberOfMoves: state.numberOfMoves + 1,
+                lastTappedTile: tappedTile,
+                playerScore: state.playerScore + 4),
           );
         } else {
+          var playerScore = state.playerScore;
+          var prevNumberOfCorrectTiles = state.prevNumberOfCorrectTiles;
+          var correctTiles = puzzle.getNumberOfCorrectTiles();
+
           // When incomplete the puzzle handle switch
+          if (correctTiles != state.prevNumberOfCorrectTiles &&
+              correctTiles > state.prevNumberOfCorrectTiles) {
+            playerScore +=
+                (state.prevNumberOfCorrectTiles - correctTiles).abs();
+
+            prevNumberOfCorrectTiles = correctTiles;
+          }
           emit(
             state.copyWith(
-              puzzle: puzzle.sort(),
-              tileMovementStatus: TileMovementStatus.moved,
-              numberOfCorrectTiles: puzzle.getNumberOfCorrectTiles(),
-              numberOfMoves: state.numberOfMoves + 1,
-              lastTappedTile: tappedTile,
-              playerScore: state.playerScore
-            ),
+                puzzle: puzzle.sort(),
+                tileMovementStatus: TileMovementStatus.moved,
+                numberOfCorrectTiles: correctTiles,
+                numberOfMoves: state.numberOfMoves + 1,
+                lastTappedTile: tappedTile,
+                prevNumberOfCorrectTiles: prevNumberOfCorrectTiles,
+                playerScore: playerScore),
           );
         }
       } else {

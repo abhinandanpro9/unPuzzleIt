@@ -3,12 +3,14 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gap/gap.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:image/image.dart' as image;
-import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/layout/layout.dart';
 import 'package:unpuzzle_it_abhi/theme/theme.dart';
 import 'package:unpuzzle_it_abhi/typography/typography.dart';
@@ -34,14 +36,144 @@ class ParseFileClass {
   }
 }
 
-class AllUtils {
-  final List<String>? achieveItems = ['1st One', '', ''];
+class SettingsUtils {
+  static SharedPreferences? preferences;
 
-  static Image? _image;
+  static Future<void> settingInit() async {
+    preferences = await SharedPreferences.getInstance();
 
-  getAchieveList() {
+    int? readHighscore;
+    int? readXp;
+    List<String>? items;
+
+    try {
+      readHighscore = preferences!.getInt('highscore');
+      readXp = preferences!.getInt('xp');
+      items = preferences!.getStringList('achievements');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+
+    if ((readHighscore == null)) {
+      await preferences!.setInt('highscore', 0);
+      readHighscore = 0;
+    }
+    if ((readXp == null)) {
+      await preferences!.setInt('xp', 0);
+      readXp = 0;
+    }
+    if ((items == null)) {
+      await preferences!.setStringList('achievements', <String>[":"]);
+      items = [":"];
+    }
+  }
+
+  static int? getHighscore() {
+    int? readHighscore;
+
+    try {
+      readHighscore = preferences!.getInt('highscore');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+    return readHighscore;
+  }
+
+  static int? getXp() {
+    int? readXp;
+
+    try {
+      readXp = preferences!.getInt('xp');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+    return readXp;
+  }
+
+  static List<String>? getAchieve() {
+    List<String>? items;
+
+    try {
+      items = preferences!.getStringList('achievements');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+    return items;
+  }
+
+  static bool? getAudio() {
+    bool? audioControl = false;
+    try {
+      audioControl = preferences!.getBool('audioControl');
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+    return audioControl;
+  }
+
+  static void setAchieve(List<String>? items) {
+    try {
+      preferences!.setStringList('achievements', items!);
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+  }
+
+  static void setHighscore(int score) {
+    try {
+      preferences!.setInt('highscore', score);
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+  }
+
+  static void setXp(int xp) {
+    try {
+      preferences!.setInt('xp', xp);
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+  }
+
+  static void setAudio(bool audioControl) {
+    try {
+      preferences!.setBool('audioControl', audioControl);
+    } on Exception catch (ex) {
+      // log("Hello " + ex.toString());
+    }
+  }
+}
+
+class AchievementList {
+  final List<String> achieveItems = ['1st One', '4 in a Row!', 'GOLDen Man !'];
+  final List<int> achieveItemsXP = [10, 40, 500];
+
+  List<String>? getAchieveList() {
     return achieveItems;
   }
+
+  List<int>? getAchieveXp() {
+    return achieveItemsXP;
+  }
+
+  List<String> getString() {
+    // this is where the mapping will be placed
+    Map<String, int> stringMap = new Map();
+
+    // and here the relationship between the dates and the meals is done
+    for (var i = 0; i < achieveItems.length; i++)
+      stringMap[achieveItems[i]] = achieveItemsXP[i];
+
+    List<String> yourObjects = stringMap.keys.map((index) {
+      return "$index: ${stringMap[index]} XP";
+    }).toList();
+
+    return yourObjects;
+  }
+}
+
+class AllUtils {
+  static Image? _image;
 
   static Future<bool> onWillPop(BuildContext context) async {
     // final dialogWidth =

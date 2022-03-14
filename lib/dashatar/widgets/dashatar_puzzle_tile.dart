@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:unpuzzle_it_abhi/audio_control/audio_control.dart';
+import 'package:unpuzzle_it_abhi/custom/custom.dart';
+import 'package:unpuzzle_it_abhi/custom/utils.dart';
 import 'package:unpuzzle_it_abhi/dashatar/dashatar.dart';
 import 'package:unpuzzle_it_abhi/flames/flames.dart';
 import 'package:unpuzzle_it_abhi/helpers/helpers.dart';
@@ -61,7 +63,6 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
   late AnimationController _controller;
   late Animation<double> _scale;
 
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   int? highscore = 0;
   int? xp = 0;
 
@@ -97,22 +98,11 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
   }
 
   Future<void> scoringUpdate(int spriteTile) async {
-    // Obtain shared preferences.
-    final SharedPreferences prefs = await _prefs;
     try {
-      highscore = prefs.getInt('highscore');
-      xp = prefs.getInt('xp');
+      highscore = SettingsUtils.getHighscore();
+      xp = SettingsUtils.getXp();
     } on Exception catch (ex) {
       log("Scoring " + ex.toString());
-    }
-
-    if ((highscore == null)) {
-      await prefs.setInt('highscore', 0);
-      highscore = 0;
-    }
-    if ((xp == null)) {
-      await prefs.setInt('xp', 0);
-      xp = 0;
     }
   }
 
@@ -126,6 +116,8 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
     final status =
         context.select((DashatarPuzzleBloc bloc) => bloc.state.status);
     final hasStarted = status == DashatarPuzzleStatus.started;
+    final puzzleState =
+        context.select((PuzzleBloc bloc) => bloc.state.puzzleStatus);
     final puzzleIncomplete =
         context.select((PuzzleBloc bloc) => bloc.state.puzzleStatus) !=
             PuzzleStatus.complete;
@@ -136,10 +128,16 @@ class DashatarPuzzleTileState extends State<DashatarPuzzleTile>
 
     final canPress = hasStarted && puzzleIncomplete;
 
-    final spriteTile =
-        puzzleIncomplete ? puzzle.getCorrectSeq(theme.pathMap) : 1;
+    int spriteTile = 1;
 
-    scoringUpdate(spriteTile);
+    if (theme.isPathTheme) {
+      spriteTile = puzzle.getNumberOfCorrectTiles() == 15
+          ? puzzleState == PuzzleStatus.complete ||
+                  puzzleState == PuzzleStatus.reversed
+              ? puzzle.getCorrectSeq(theme.pathMap)
+              : 1
+          : puzzle.getCorrectSeq(theme.pathMap);
+    }
 
     return Stack(
       children: [
