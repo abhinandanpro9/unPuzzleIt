@@ -63,7 +63,7 @@ class DashatarScore extends StatelessWidget {
 
         final numberOfMovesTextStyle = currentSize == ResponsiveLayoutSize.small
             ? PuzzleTextStyle.headline5
-            : PuzzleTextStyle.headline4;
+            : PuzzleTextStyle.headline5;
 
         return ClipRRect(
           key: const Key('dashatar_score'),

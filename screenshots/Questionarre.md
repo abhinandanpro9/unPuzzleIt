@@ -4,10 +4,10 @@ As a freelance developer, I had heard a lot about flutter, but never got to try 
 Unpuzzle is to not only solving the puzzle, but find ways to surprise ourselves in the process!
 
 ## What it does
-My game has 3 modes - simple, path and custom. Each is made for a purpose :
+My game has 3 modes - Simple, Lost of Track and Go Custom. Each is made for a purpose :
 1. **Simple** - Simple image with known blocks for solving.
-2. **Path** - Involves a quest to find the path to help a character find his way to Gold coin.
-3. **Custom** - This is where users can upload their own images and the game generates a puzzle. The grid size is customization too!
+2. **Lost of Track** - Involves a quest to find the path to help a character find his way to Gold coin.
+3. **Go Custom** - This is where users can upload their own images and the game generates a puzzle. The grid size is customization too!
 
 There's hidden **achievements** as well for users to unlock.
 
@@ -15,7 +15,7 @@ There's hidden **achievements** as well for users to unlock.
 -Android: Tested
 -Web: Tested
 -Windows: Tested
--iOS: Not Tested
+-iOS: Not Tested (pretty sure it works)
  
 ## How I built it
 
@@ -38,5 +38,5 @@ There were lot of challenges, but most challenging was to auto solve the shuffle
 3. Learnt to use photoshop to turn my photos into game backgrounds.
 
 ## What's next for Unpuzzle It!
-1. I plan to launch a fun _multiplayer_ mode. Usually people skip this, thinking there's not much scope for multiplayer. But during development, I got a really fun idea for multiplayer.
+1. I plan to launch a fun _multiplayer_ mode. Usually people skip this, thinking there's not much scope for multiplayer. But during development, I got a really fun idea for multiplayer using XP.
 2. I also hope to win this hackathon.
