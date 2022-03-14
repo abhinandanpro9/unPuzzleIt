@@ -1,14 +1,17 @@
-# Slide Puzzle
+# UnPuzzle It!
 
 ![Photo Booth Header][logo]
 
 ![coverage][coverage_badge]
 [![License: MIT][license_badge]][license_link]
 
-A slide puzzle built for [Flutter Challenge](https://flutterhack.devpost.com/).
+A slide puzzle built for [Flutter Challenge](https://devpost.com/software/unpuzzle-it).
 
 *Built by Abhinandan B R*
 
+---
+**Demo**
+[Demo](https://abhinandanbr.github.io/)
 
 ---
 **Platforms Supported**
@@ -44,4 +47,4 @@ $ flutter run -d chrome
 [coverage_badge]: coverage_badge.svg
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
-[logo]: art/header.png
+[logo]: asset/images/dashatar/success/path.png
