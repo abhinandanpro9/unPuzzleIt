@@ -11,10 +11,12 @@ A slide puzzle built for [Flutter Challenge](https://devpost.com/software/unpuzz
 
 ---
 **Demo**
+
 [Demo](https://abhinandanbr.github.io/)
 
 ---
 **Platforms Supported**
+
 -Android: Tested
 -Web: Tested
 -Windows: Tested
