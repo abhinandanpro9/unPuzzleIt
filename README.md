@@ -17,10 +17,10 @@ A slide puzzle built for [Flutter Challenge](https://devpost.com/software/unpuzz
 ---
 **Platforms Supported**
 
--Android: Tested
--Web: Tested
--Windows: Tested
--iOS: Not Tested (pretty sure it works)
+1. **Android** : Tested
+2. **Web**: Tested
+3. **Windows**: Tested
+4. **iOS**: Not Tested (pretty sure it works)
 
 ---
 
