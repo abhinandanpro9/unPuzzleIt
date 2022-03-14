@@ -47,4 +47,4 @@ $ flutter run -d chrome
 [coverage_badge]: coverage_badge.svg
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
-[logo]: asset/images/dashatar/success/path.png
+[logo]: art/header.png
