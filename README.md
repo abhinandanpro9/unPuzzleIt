@@ -7,8 +7,25 @@
 
 A slide puzzle built for [Flutter Challenge](https://flutterhack.devpost.com/).
 
-*Built by Abhinandan*
+*Built by Abhinandan B R*
 
+
+---
+**Platforms Supported**
+-Android: Tested
+-Web: Tested
+-Windows: Tested
+-iOS: Not Tested (pretty sure it works)
+
+---
+
+## What it does
+My game has 3 modes - Simple, Lost of Track and Go Custom. Each is made for a purpose :
+1. **Simple** - Simple image with known blocks for solving.
+2. **Lost of Track** - Involves a quest to find the path to help a character find his way to Gold coin.
+3. **Go Custom** - This is where users can upload their own images and the game generates a puzzle. The grid size is customization too!
+
+There's hidden **achievements** as well for users to unlock.
 
 ---
 
@@ -24,17 +41,7 @@ $ flutter run -d chrome
 
 
 
----
-
-## Working with Translations 🌐
-
-This project relies on [flutter_localizations][flutter_localizations_link] and follows the [official internationalization guide for Flutter][internationalization_link].
-
-
-
 [coverage_badge]: coverage_badge.svg
-[flutter_localizations_link]: https://api.flutter.dev/flutter/flutter_localizations/flutter_localizations-library.html
-[internationalization_link]: https://flutter.dev/docs/development/accessibility-and-localization/internationalization
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
 [logo]: art/header.png
