@@ -10,6 +10,12 @@ My game has 3 modes - simple, path and custom. Each is made for a purpose :
 3. **Custom** - This is where users can upload their own images and the game generates a puzzle. The grid size is customization too!
 
 There's hidden **achievements** as well for users to unlock.
+
+**Platforms Supported**
+-Android: Tested
+-Web: Tested
+-Windows: Tested
+-iOS: Not Tested
  
 ## How I built it
 
@@ -28,7 +34,7 @@ There were lot of challenges, but most challenging was to auto solve the shuffle
 
 ## What I learned
 1. I learnt flutter and I am impressed I have done so much in such less time (I started a month late).
-2. I learnt that flutter is the most easiest  and versatile cross-platform out there and anyone can quickly learn and build apps.
+2. I learnt that flutter is the most easiest  and versatile cross-platform out there and anyone can quickly learn and build responsive apps.
 3. Learnt to use photoshop to turn my photos into game backgrounds.
 
 ## What's next for Unpuzzle It!
